@@ -22,8 +22,8 @@ RSpec.describe Twilio::PhoneReceiveRecordingOperation, type: :operation do
       "ErrorCode" => "0",
     }
   }
-  let(:call) {
-    Call.create!(
+  let(:phone_call) {
+    PhoneCall.create!(
       number: "+12048005721",
       caller_number: "+16135551234",
       caller_city: "OTTAWA",
@@ -33,13 +33,13 @@ RSpec.describe Twilio::PhoneReceiveRecordingOperation, type: :operation do
     )
   }
   let(:response) {
-    call.responses.create!(
+    phone_call.responses.create!(
       question_handle: question_handle,
     )
   }
 
   before do
-    call
+    phone_call
   end
 
   describe "#execute" do
@@ -49,8 +49,8 @@ RSpec.describe Twilio::PhoneReceiveRecordingOperation, type: :operation do
     end
 
     it "creates a recording record" do
-      expect{ described_class.call(params: params) }.to change{ call.reload.recordings.size }.by(1)
-      recording = call.recordings.last
+      expect{ described_class.call(params: params) }.to change{ phone_call.reload.recordings.size }.by(1)
+      recording = phone_call.recordings.last
       expect(recording.url).to eq(recording_url)
     end
 
@@ -62,7 +62,7 @@ RSpec.describe Twilio::PhoneReceiveRecordingOperation, type: :operation do
       it "associates it to the response" do
         result = described_class.call(params: params.merge("response_id" => response.id.to_s))
         expect(result).to_not match(/Hangup/)
-        expect(response.reload.recording).to eq(call.recordings.last)
+        expect(response.reload.recording).to eq(phone_call.recordings.last)
       end
     end
 

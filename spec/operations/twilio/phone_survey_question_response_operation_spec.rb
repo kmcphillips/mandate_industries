@@ -36,8 +36,8 @@ RSpec.describe Twilio::PhoneSurveyQuestionResponseOperation, type: :operation do
       "Digits" => "5",
     }
   }
-  let!(:call) {
-    Call.create!(
+  let(:phone_call) {
+    PhoneCall.create!(
       number: "+12048005721",
       caller_number: "+16135551234",
       caller_city: "OTTAWA",
@@ -46,6 +46,10 @@ RSpec.describe Twilio::PhoneSurveyQuestionResponseOperation, type: :operation do
       sid: call_sid,
     )
   }
+
+  before do
+    phone_call
+  end
 
   describe "#execute" do
     it "handles valid SID and returns" do

@@ -2,7 +2,7 @@
 module Twilio
   class PhoneGreetingOperation < Twilio::BaseOperation
     def execute
-      @call = Call.new(
+      @phone_call = PhoneCall.new(
         sid: params["CallSid"],
         number: params["Called"].presence || params["To"].presence,
         caller_number: params["Caller"] || params["From"].presence,
@@ -10,9 +10,9 @@ module Twilio
         caller_province: params["CallerState"] || params["FromState"].presence,
         caller_country: params["CallerCountry"] || params["FromCountry"].presence,
       )
-      @call.save!
+      @phone_call.save!
 
-      Rails.logger.tagged(self.class) { |l| l.info("created call #{@call.inspect}") }
+      Rails.logger.tagged(self.class) { |l| l.info("created call #{@phone_call.inspect}") }
 
       question_handle = "favourite_number"
 

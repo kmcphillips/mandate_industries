@@ -4,7 +4,7 @@ module Twilio
     input :question_handle, accepts: String, type: :keyword, required: true
 
     def execute
-      response_record = call_record.responses.build(question_handle: question_handle, digits: digits)
+      response_record = phone_call.responses.build(question_handle: question_handle, digits: digits)
       response_record.save!
 
       Rails.logger.tagged(self.class) { |l| l.info("created response #{response_record.inspect}") }

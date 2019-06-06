@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_06_232237) do
+ActiveRecord::Schema.define(version: 2019_06_06_235222) do
 
-  create_table "calls", force: :cascade do |t|
+  create_table "phone_calls", force: :cascade do |t|
     t.string "number"
     t.string "caller_number"
     t.string "caller_city"
@@ -25,25 +25,24 @@ ActiveRecord::Schema.define(version: 2019_06_06_232237) do
   end
 
   create_table "recordings", force: :cascade do |t|
-    t.integer "call_id", null: false
+    t.integer "phone_call_id", null: false
     t.string "recording_sid"
     t.string "duration"
     t.string "url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["call_id"], name: "index_recordings_on_call_id"
+    t.index ["phone_call_id"], name: "index_recordings_on_call_id"
   end
 
   create_table "responses", force: :cascade do |t|
-    t.integer "call_id"
+    t.integer "phone_call_id"
     t.string "question_handle"
     t.string "digits"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "recording_id"
-    t.index ["call_id", "question_handle"], name: "index_responses_on_call_id_and_question_handle"
-    t.index ["call_id"], name: "index_responses_on_call_id"
+    t.index ["phone_call_id", "question_handle"], name: "index_responses_on_phone_call_id_and_question_handle"
   end
 
-  add_foreign_key "recordings", "calls"
+  add_foreign_key "recordings", "phone_calls"
 end

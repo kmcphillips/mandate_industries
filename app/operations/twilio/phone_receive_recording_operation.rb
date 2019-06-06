@@ -2,7 +2,7 @@
 module Twilio
   class PhoneReceiveRecordingOperation < Twilio::BaseOperation
     def execute
-      recording = call_record.recordings.build(
+      recording = phone_call.recordings.build(
         recording_sid: params["RecordingSid"],
         url: params["RecordingUrl"],
         duration: params["RecordingDuration"].presence,
@@ -12,7 +12,7 @@ module Twilio
       Rails.logger.tagged(self.class) { |l| l.info("created recording #{recording.inspect}") }
 
       if params["response_id"].present?
-        response_record = call_record.responses.find(params["response_id"])
+        response_record = phone_call.responses.find(params["response_id"])
         response_record.recording = recording
         response_record.save!
       end

@@ -23,8 +23,8 @@ module Twilio
       "male"
     end
 
-    def call_record
-      @call ||= Call.find_by(sid: params["CallSid"])
+    def phone_call
+      @phone_call ||= PhoneCall.find_by(sid: params["CallSid"])
     end
   end
 end
