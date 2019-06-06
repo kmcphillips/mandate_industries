@@ -7,7 +7,7 @@ module Twilio
       halt(hangup_response) unless valid_webhook?
     end
 
-    private
+    protected
 
     def hangup_response
       response = Twilio::TwiML::VoiceResponse.new
@@ -21,6 +21,10 @@ module Twilio
 
     def voice
       "male"
+    end
+
+    def call_record
+      @call ||= Call.find_by(sid: params["CallSid"])
     end
   end
 end

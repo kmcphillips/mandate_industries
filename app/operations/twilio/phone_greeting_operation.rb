@@ -14,9 +14,11 @@ module Twilio
 
       Rails.logger.tagged(self.class) { |l| l.info("created call #{@call.inspect}") }
 
+      question_handle = "favourite_number"
+
       response = Twilio::TwiML::VoiceResponse.new do |response|
-        response.say(voice: voice, message: "Hello, and thank you for calling Mandate Industries Incorporated! Please enter your favorite number.")
-        response.gather(action: "/twilio/phone/survey_answer.xml", input: "dtmf", num_digits: 1)
+        response.say(voice: voice, message: "Hello, and thank you for calling Mandate Industries Incorporated! Please enter your favourite number.")
+        response.gather(action: "/twilio/phone/survey/#{question_handle}/response.xml", input: "dtmf", num_digits: 1)
       end
 
       response.to_s

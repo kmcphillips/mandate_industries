@@ -4,6 +4,7 @@ require 'rails_helper'
 RSpec.describe Twilio::PhoneGreetingOperation, type: :operation do
   let(:account_sid) { "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
   let(:auth_token) { "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" }
+  let(:call_sid) { "CA5073183d7484999999999999747bf790" }
   let(:params) {
     {
       "Called" => "+12048005721",
@@ -12,7 +13,7 @@ RSpec.describe Twilio::PhoneGreetingOperation, type: :operation do
       "Direction" => "inbound",
       "CallerState" => "ON",
       "ToZip" => "",
-      "CallSid" => "CA5073183d7484999999999999747bf790",
+      "CallSid" => call_sid,
       "To" => "+12048005721",
       "CallerZip" => "",
       "ToCountry" => "CA",
@@ -31,9 +32,6 @@ RSpec.describe Twilio::PhoneGreetingOperation, type: :operation do
       "CalledState" => "MB",
       "FromZip" => "",
       "FromState" => "ON",
-      "controller" => "twilio",
-      "action" => "answer",
-      "format" => "xml",
     }
   }
 

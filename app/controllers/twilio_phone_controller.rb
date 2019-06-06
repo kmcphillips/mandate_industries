@@ -8,15 +8,15 @@ class TwilioPhoneController < ApplicationController
     end
   end
 
-  def survey_answer
+  def survey_question_response
     respond_to do |format|
-      format.xml { render xml: Twilio::PhoneSurveyAnswerOperation.call(params: params_hash) }
+      format.xml { render xml: Twilio::PhoneSurveyQuestionResponseOperation.call(question_handle: params[:question_handle], params: params_hash) }
     end
   end
 
   private
 
   def params_hash
-    params.permit!.to_h
+    params.permit!.to_h.except("controller", "action", "format", "question_handle")
   end
 end
