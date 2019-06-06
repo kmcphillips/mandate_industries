@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Twilio::AnswerOperation, type: :operation do
+RSpec.describe Twilio::PhoneSurveyAnswerOperation, type: :operation do
   let(:account_sid) { "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
   let(:auth_token) { "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" }
   let(:params) {
@@ -31,6 +31,7 @@ RSpec.describe Twilio::AnswerOperation, type: :operation do
       "CalledState" => "MB",
       "FromZip" => "",
       "FromState" => "ON",
+      "Digits" => "5",
       "controller" => "twilio",
       "action" => "answer",
       "format" => "xml",
@@ -39,8 +40,7 @@ RSpec.describe Twilio::AnswerOperation, type: :operation do
 
   describe "#execute" do
     it "handles valid SID and returns" do
-      result = Twilio::AnswerOperation.call(params: params)
-      expect(result).to_not match(/Hangup/)
+      result = described_class.call(params: params)
       expect(result).to match(/Say/)
     end
 
@@ -48,7 +48,7 @@ RSpec.describe Twilio::AnswerOperation, type: :operation do
       let(:account_sid) { "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaa99" }
 
       it "handles valid SID and returns" do
-        result = Twilio::AnswerOperation.call(params: params)
+        result = described_class.call(params: params)
         expect(result).to match(/Hangup/)
         expect(result).to_not match(/Say/)
       end
