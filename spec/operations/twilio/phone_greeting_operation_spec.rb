@@ -44,6 +44,16 @@ RSpec.describe Twilio::PhoneGreetingOperation, type: :operation do
       expect(result).to match(/Say/)
     end
 
+    it "creates a call record" do
+      expect{ described_class.call(params: params) }.to change{ Call.count }.by(1)
+      call = Call.last
+      expect(call.number).to eq("+12048005721")
+      expect(call.caller_number).to eq("+16135551234")
+      expect(call.caller_city).to eq("OTTAWA")
+      expect(call.caller_province).to eq("ON")
+      expect(call.caller_country).to eq("CA")
+    end
+
     context "with invalid SID" do
       let(:account_sid) { "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaa99" }
 

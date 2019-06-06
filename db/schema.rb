@@ -10,6 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 2019_06_06_202843) do
+
+  create_table "calls", force: :cascade do |t|
+    t.string "number"
+    t.string "caller_number"
+    t.string "caller_city"
+    t.string "caller_province"
+    t.string "caller_country"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
 end
