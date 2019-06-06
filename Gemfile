@@ -15,6 +15,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'bootsnap', '>= 1.4.2', require: false
 
 gem "twilio-ruby"
+gem "active_operation"
 
 group :development, :test do
   gem "pry-rails"
