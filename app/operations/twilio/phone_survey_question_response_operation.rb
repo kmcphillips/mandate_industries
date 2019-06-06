@@ -9,9 +9,19 @@ module Twilio
 
       Rails.logger.tagged(self.class) { |l| l.info("created response #{response_record.inspect}") }
 
-      response = Twilio::TwiML::VoiceResponse.new do |response|
-        response.say(voice: voice, message: "Thank you for your input! We have recorded your answer #{digits}. Your opinion is important to us and will be disregarded. Goodbye.")
-        response.hangup
+      case question_handle
+      when "favourite_number"
+        response = Twilio::TwiML::VoiceResponse.new do |response|
+          response.say(voice: voice, message: "You have selected the number \"#{digits}\" as your favourite. Your response has been recorded. In 5 seconds or less, after the tone please state your reason for picking this number.")
+          response.gather(action: "/twilio/phone/survey/favourite_number_reason/response.xml", input: "dtmf", num_digits: 1)
+        end
+      when "favourite_number_reason"
+        response = Twilio::TwiML::VoiceResponse.new do |response|
+          response.say(voice: voice, message: "Thank you for your input! We have made a note of your reasons. Your opinion is important to us and will be disregarded. Mandate Industries appreciates your business.")
+          response.hangup
+        end
+      else
+        raise "Unknown question_handle=#{question_handle}"
       end
 
       response.to_s

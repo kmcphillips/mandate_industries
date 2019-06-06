@@ -5,7 +5,7 @@ RSpec.describe Twilio::PhoneSurveyQuestionResponseOperation, type: :operation do
   let(:account_sid) { "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
   let(:auth_token) { "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" }
   let(:call_sid) { "CA5073183d7484999999999999747bf790" }
-  let(:question_handle) { "placeholder1" }
+  let(:question_handle) { "favourite_number" }
   let(:params) {
     {
       "Called" => "+12048005721",
