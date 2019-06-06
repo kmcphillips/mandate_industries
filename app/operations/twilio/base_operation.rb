@@ -18,5 +18,9 @@ module Twilio
     def valid_webhook?
       params["AccountSid"] == Rails.application.credentials.twilio![:account_sid]
     end
+
+    def voice
+      "male"
+    end
   end
 end
