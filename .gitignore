@@ -31,3 +31,7 @@ yarn-debug.log*
 .yarn-integrity
 
 *.sqlite3
+
+/config/credentials/production.key
+/config/credentials/development.key
+/config/credentials/test.key
