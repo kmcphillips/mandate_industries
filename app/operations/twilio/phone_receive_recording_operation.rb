@@ -11,6 +11,12 @@ module Twilio
 
       Rails.logger.tagged(self.class) { |l| l.info("created recording #{recording.inspect}") }
 
+      if params["response_id"].present?
+        response_record = call_record.responses.find(params["response_id"])
+        response_record.recording = recording
+        response_record.save!
+      end
+
       "OK"
     end
   end
