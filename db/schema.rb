@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_06_202843) do
+ActiveRecord::Schema.define(version: 2019_06_06_205258) do
 
   create_table "calls", force: :cascade do |t|
     t.string "number"
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 2019_06_06_202843) do
     t.string "caller_country"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "sid"
+    t.index ["sid"], name: "index_calls_on_sid"
   end
 
 end

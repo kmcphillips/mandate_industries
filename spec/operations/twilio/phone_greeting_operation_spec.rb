@@ -47,6 +47,7 @@ RSpec.describe Twilio::PhoneGreetingOperation, type: :operation do
     it "creates a call record" do
       expect{ described_class.call(params: params) }.to change{ Call.count }.by(1)
       call = Call.last
+      expect(call.sid).to eq("CA5073183d7484999999999999747bf790")
       expect(call.number).to eq("+12048005721")
       expect(call.caller_number).to eq("+16135551234")
       expect(call.caller_city).to eq("OTTAWA")

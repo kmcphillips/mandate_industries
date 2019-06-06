@@ -3,6 +3,7 @@ module Twilio
   class PhoneGreetingOperation < Twilio::BaseOperation
     def execute
       @call = Call.new(
+        sid: params["CallSid"],
         number: params["Called"].presence || params["To"].presence,
         caller_number: params["Caller"] || params["From"].presence,
         caller_city: params["CallerCity"] || params["FromCity"].presence,
