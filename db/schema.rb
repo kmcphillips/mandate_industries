@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_06_210006) do
+ActiveRecord::Schema.define(version: 2019_06_06_230834) do
 
   create_table "calls", force: :cascade do |t|
     t.string "number"
@@ -24,6 +24,16 @@ ActiveRecord::Schema.define(version: 2019_06_06_210006) do
     t.index ["sid"], name: "index_calls_on_sid"
   end
 
+  create_table "recordings", force: :cascade do |t|
+    t.integer "call_id", null: false
+    t.string "recording_sid"
+    t.string "duration"
+    t.string "url"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["call_id"], name: "index_recordings_on_call_id"
+  end
+
   create_table "responses", force: :cascade do |t|
     t.integer "call_id"
     t.string "question_handle"
@@ -34,4 +44,5 @@ ActiveRecord::Schema.define(version: 2019_06_06_210006) do
     t.index ["call_id"], name: "index_responses_on_call_id"
   end
 
+  add_foreign_key "recordings", "calls"
 end

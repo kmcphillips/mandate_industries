@@ -13,7 +13,13 @@ module Twilio
       when "favourite_number"
         response = Twilio::TwiML::VoiceResponse.new do |response|
           response.say(voice: voice, message: "You have selected the number \"#{digits}\" as your favourite. Your response has been recorded. In 5 seconds or less, after the tone please state your reason for picking this number.")
-          response.gather(action: "/twilio/phone/survey/favourite_number_reason/response.xml", input: "dtmf", num_digits: 1)
+          response.record(
+            max_length: 5,
+            play_beep: true,
+            trim: "trim-silence",
+            action: "/twilio/phone/survey/favourite_number_reason/response.xml",
+            recording_status_callback: "/twilio/phone/receive_recording.xml",
+          )
         end
       when "favourite_number_reason"
         response = Twilio::TwiML::VoiceResponse.new do |response|
