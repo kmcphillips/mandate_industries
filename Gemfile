@@ -15,6 +15,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 
 gem 'twilio-ruby'
 gem 'active_operation'
+gem 'kaminari'
 
 group :development, :test do
   gem 'pry-rails'

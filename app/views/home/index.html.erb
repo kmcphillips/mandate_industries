@@ -1,1 +1,9 @@
 <h1>Call <%= Rails.application.credentials.twilio![:phone_number] %></h1>
+
+<% if @calls.any? %>
+  <% @calls.each do |call| %>
+    <p>
+      A customer from <%= caller_location(call) %> called from <%= formatted_phone(call.caller_number) %> called <%= distance_of_time_in_words(Time.now, call.created_at) %> ago.
+    </p>
+  <% end %>
+<% end %>
