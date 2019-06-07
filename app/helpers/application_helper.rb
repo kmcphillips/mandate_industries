@@ -10,4 +10,8 @@ module ApplicationHelper
   def formatted_phone(number)
     number_to_phone(number, area_code: true)
   end
+
+  def link_to_formatted_phone(number)
+    link_to(formatted_phone(number), "tel:#{number.gsub('+', '')}")
+  end
 end

@@ -5,7 +5,7 @@
 </script>
 
 <h1>Welcome to Mandate Industries</h1>
-<h2>Please call <%= formatted_phone(Rails.application.credentials.twilio![:phone_number]) %> for service</h2>
+<h2>Please call <%= link_to_formatted_phone(Rails.application.credentials.twilio![:phone_number]) %> for service</h2>
 
 <% if @phone_calls.any? %>
   <h3>Recent satisfied customers:</h3>
