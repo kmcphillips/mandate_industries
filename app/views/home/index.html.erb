@@ -17,21 +17,19 @@
       <% if phone_call.responses.any? %>
         <ul>
           <% phone_call.responses.order(created_at: :asc).each do |response| %>
-            <li>
-              <% if response.prompt_handle == "favourite_number" && response.digits.presence %>
-                Their favourite number is <%= response.digits.presence %>.
-              <% elsif response.prompt_handle == "second_favourite_number" && response.digits.presence %>
-                Their second favourite number is <%= response.digits.presence %>.
-              <% elsif response.prompt_handle == "favourite_number_reason" %>
-                <% if response.recording && response.recording.audio.attached? %>
-                  They <%= link_to("left feedback for their reasons", rails_blob_path(response.recording.audio, disposition: "attachment")) %>.
-                <% else %>
-                  <!-- no recording yet response_id=<%= response.id %> -->
-                <% end %>
+            <% if response.prompt_handle == "favourite_number" && response.digits.presence %>
+              <li>Their favourite number is <%= response.digits.presence %>.</li>
+            <% elsif response.prompt_handle == "second_favourite_number" && response.digits.presence %>
+              <li>Their second favourite number is <%= response.digits.presence %>.</li>
+            <% elsif response.prompt_handle == "favourite_number_reason" %>
+              <% if response.recording && response.recording.audio.attached? %>
+                <li>They <%= link_to("left feedback for their reasons", rails_blob_path(response.recording.audio, disposition: "attachment")) %>.</li>
               <% else %>
-                They answered a question "<%= response.prompt_handle %>".
+                <!-- no recording yet response_id=<%= response.id %> -->
               <% end %>
-            </li>
+            <% else %>
+              <li>They answered a question "<%= response.prompt_handle %>".</li>
+            <% end %>
           <% end %>
         </ul>
       <% end %>
