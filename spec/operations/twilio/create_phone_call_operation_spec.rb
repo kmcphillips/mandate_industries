@@ -35,6 +35,10 @@ RSpec.describe Twilio::CreatePhoneCallOperation, type: :operation do
   }
 
   describe "#execute" do
+    before do
+      allow_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create)
+    end
+
     it "creates the PhoneCall" do
       phone_call = described_class.call(params: params)
       expect(phone_call).to be_a(PhoneCall)
@@ -49,6 +53,12 @@ RSpec.describe Twilio::CreatePhoneCallOperation, type: :operation do
       expect(phone_call.caller_city).to eq("OTTAWA")
       expect(phone_call.caller_province).to eq("ON")
       expect(phone_call.caller_country).to eq("CA")
+    end
+
+    it "sends the SMS notifications" do
+      expect_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create).with(hash_including(to: '+12222222222'))
+      expect_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create).with(hash_including(to: '+13333333333'))
+      described_class.call(params: params)
     end
   end
 end
