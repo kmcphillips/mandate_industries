@@ -1,13 +1,14 @@
-<h1>Call <%= formatted_phone(Rails.application.credentials.twilio![:phone_number]) %></h1>
+<h1>Welcome to Mandate Industries</h1>
+<h2>Please call <%= formatted_phone(Rails.application.credentials.twilio![:phone_number]) %> for service</h2>
 
-<% if @calls.any? %>
-  <% @calls.each do |call| %>
+<% if @phone_calls.any? %>
+  <% @phone_calls.each do |phone_call| %>
     <p>
-      A customer from <%= caller_location(call) %> called from <%= formatted_phone(call.caller_number) %> called <%= distance_of_time_in_words(Time.now, call.created_at) %> ago.
-      <!-- <%= call.sid %> -->
-      <% if call.responses.any? %>
+      A customer from <%= caller_location(phone_call) %> called from <%= formatted_phone(phone_call.caller_number) %> called <%= distance_of_time_in_words(Time.now, phone_call.created_at) %> ago.
+      <!-- <%= phone_call.sid %> -->
+      <% if phone_call.responses.any? %>
         <ul>
-          <% call.responses.each do |response| %>
+          <% phone_call.responses.each do |response| %>
             <li>
               <% if response.question_handle == "favourite_number" %>
                 Their favourite number is <%= response.digits.presence || "unknown" %>.
