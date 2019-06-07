@@ -5,10 +5,10 @@ RSpec.describe Twilio::PhoneReceiveRecordingOperation, type: :operation do
   include_examples "twilio API call"
 
   let(:phone_call) { create(:phone_call, number: to_number, caller_number: from_number, sid: call_sid) }
-  let(:response) { create(:response, phone_call: phone_call, question_handle: question_handle)}
+  let(:response) { create(:response, phone_call: phone_call, prompt_handle: prompt_handle) }
   let(:recording_sid) { "REdddddddddddddddddddddddddddddddd" }
   let(:recording_url) { "https://api.twilio.com/2010-04-01/Accounts/#{account_sid}/Recordings/#{recording_sid}" }
-  let(:question_handle) { "favourite_number" }
+  let(:prompt_handle) { "favourite_number" }
   let(:params) {
     {
       "AccountSid" => account_sid,
@@ -24,41 +24,13 @@ RSpec.describe Twilio::PhoneReceiveRecordingOperation, type: :operation do
     }
   }
 
-  before do
-    phone_call
-  end
-
   describe "#execute" do
-    it "handles valid SID and returns" do
-      result = described_class.call(params: params)
-      expect(result).to_not match(/Hangup/)
-    end
-
-    it "creates a recording record" do
-      expect{ described_class.call(params: params) }.to change{ phone_call.reload.recordings.size }.by(1)
-      recording = phone_call.recordings.last
-      expect(recording.url).to eq(recording_url)
-    end
-
-    context "with response_id" do
-      before do
-        response
-      end
-
-      it "associates it to the response" do
-        result = described_class.call(params: params.merge("response_id" => response.id.to_s))
-        expect(result).to_not match(/Hangup/)
-        expect(response.reload.recording).to eq(phone_call.recordings.last)
-      end
-    end
-
-    context "with invalid SID" do
-      let(:account_sid) { "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaa99" }
-
-      it "handles valid SID and returns" do
-        result = described_class.call(params: params)
-        expect(result).to match(/Hangup/)
-      end
+    it "creates the recording and associates the response" do
+      recording = nil
+      expect {
+        recording = described_class.call(phone_call_id: phone_call.id, response_id: response.id, params: params)
+      }.to change{ phone_call.reload.recordings.count }.by(1)
+      expect(response.reload.recording).to eq(recording)
     end
   end
 end

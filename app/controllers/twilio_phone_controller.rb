@@ -2,27 +2,53 @@
 class TwilioPhoneController < ApplicationController
   skip_before_action :verify_authenticity_token
 
+  before_action :validate_webhook
+
   def greeting
     respond_to do |format|
-      format.xml { render xml: Twilio::PhoneGreetingOperation.call(params: params_hash) }
+      format.xml do
+        phone_call = Twilio::CreatePhoneCallOperation.call(params: params_hash)
+        next_prompt_handle = Twilio::PhoneNextPromptHandleOperation.call(phone_call_id: phone_call.id, response_id: nil)
+        render xml: Twilio::PhonePromptOperation.call(phone_call_id: phone_call.id, prompt_handle: next_prompt_handle, greeting: true)
+      end
     end
   end
 
-  def survey_question_response
+  def prompt
     respond_to do |format|
-      format.xml { render xml: Twilio::PhoneSurveyQuestionResponseOperation.call(question_handle: params[:question_handle], params: params_hash) }
+      format.xml do
+        phone_call = Twilio::FindPhoneCallOperation.call(params: params_hash)
+        next_prompt_handle = Twilio::PhoneNextPromptHandleOperation.call(phone_call_id: phone_call.id, response_id: params[:response_id])
+        Twilio::PhonePromptUpdateResponseOperation.call(phone_call_id: phone_call.id, response_id: params[:response_id], params: params_hash)
+        render xml: Twilio::PhonePromptOperation.call(phone_call_id: phone_call.id, prompt_handle: next_prompt_handle)
+      end
     end
   end
 
-  def receive_recording
+  def receive_response_recording
     respond_to do |format|
-      format.xml { render xml: Twilio::PhoneReceiveRecordingOperation.call(params: params_hash) }
+      format.html do
+        phone_call = Twilio::FindPhoneCallOperation.call(params: params_hash)
+        Twilio::PhoneReceiveRecordingOperation.call(phone_call_id: phone_call.id, response_id: params[:response_id], params: params_hash)
+
+        head :ok
+      end
     end
   end
 
   private
 
+  def validate_webhook
+    if params["AccountSid"] != Rails.application.credentials.twilio![:account_sid]
+      respond_to do |format|
+        format.xml do
+          render xml: Twilio::PhoneRespondErrorOperation.call()
+        end
+      end
+    end
+  end
+
   def params_hash
-    params.permit!.to_h.except("controller", "action", "format", "question_handle")
+    params.permit!.to_h.except("controller", "action", "format", "response_id", "prompt_handle")
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Twilio::PhoneGreetingOperation, type: :operation do
+RSpec.describe Twilio::CreatePhoneCallOperation, type: :operation do
   include_examples "twilio API call"
 
   let(:params) {
@@ -35,10 +35,9 @@ RSpec.describe Twilio::PhoneGreetingOperation, type: :operation do
   }
 
   describe "#execute" do
-    it "handles valid SID and returns" do
-      result = described_class.call(params: params)
-      expect(result).to_not match(/Hangup/)
-      expect(result).to match(/Say/)
+    it "creates the PhoneCall" do
+      phone_call = described_class.call(params: params)
+      expect(phone_call).to be_a(PhoneCall)
     end
 
     it "creates a call record" do
@@ -50,16 +49,6 @@ RSpec.describe Twilio::PhoneGreetingOperation, type: :operation do
       expect(phone_call.caller_city).to eq("OTTAWA")
       expect(phone_call.caller_province).to eq("ON")
       expect(phone_call.caller_country).to eq("CA")
-    end
-
-    context "with invalid SID" do
-      let(:account_sid) { "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaa99" }
-
-      it "handles valid SID and returns" do
-        result = described_class.call(params: params)
-        expect(result).to match(/Hangup/)
-        expect(result).to_not match(/Say/)
-      end
     end
   end
 end

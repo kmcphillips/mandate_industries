@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_06_235222) do
+ActiveRecord::Schema.define(version: 2019_06_07_012100) do
 
   create_table "phone_calls", force: :cascade do |t|
     t.string "number"
@@ -36,12 +36,12 @@ ActiveRecord::Schema.define(version: 2019_06_06_235222) do
 
   create_table "responses", force: :cascade do |t|
     t.integer "phone_call_id", limit: 8
-    t.string "question_handle"
+    t.string "prompt_handle"
     t.string "digits"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "recording_id", limit: 8
-    t.index ["phone_call_id", "question_handle"], name: "index_responses_on_phone_call_id_and_question_handle"
+    t.index ["phone_call_id", "prompt_handle"], name: "index_responses_on_phone_call_id_and_prompt_handle"
   end
 
 end

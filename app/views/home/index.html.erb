@@ -10,12 +10,12 @@
         <ul>
           <% phone_call.responses.each do |response| %>
             <li>
-              <% if response.question_handle == "favourite_number" %>
+              <% if response.prompt_handle == "favourite_number" %>
                 Their favourite number is <%= response.digits.presence || "unknown" %>.
-              <% elsif response.question_handle == "favourite_number_reason" %>
+              <% elsif response.prompt_handle == "favourite_number_reason" %>
                 Their reason is <%= response.digits.presence || "unknown" %>.
               <% else %>
-                They answered a question "<%= response.question_handle %>".
+                They answered a question "<%= response.prompt_handle %>".
               <% end %>
             </li>
           <% end %>
