@@ -21,6 +21,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'rspec-rails'
   gem 'sqlite3'
+  gem 'factory_bot_rails'
 end
 
 group :development do

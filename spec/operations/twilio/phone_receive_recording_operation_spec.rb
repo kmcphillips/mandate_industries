@@ -2,9 +2,10 @@
 require 'rails_helper'
 
 RSpec.describe Twilio::PhoneReceiveRecordingOperation, type: :operation do
-  let(:account_sid) { "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
-  let(:auth_token) { "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" }
-  let(:call_sid) { "CA5073183d7484999999999999747bf790" }
+  include_examples "twilio API call"
+
+  let(:phone_call) { create(:phone_call, number: to_number, caller_number: from_number, sid: call_sid) }
+  let(:response) { create(:response, phone_call: phone_call, question_handle: question_handle)}
   let(:recording_sid) { "REdddddddddddddddddddddddddddddddd" }
   let(:recording_url) { "https://api.twilio.com/2010-04-01/Accounts/#{account_sid}/Recordings/#{recording_sid}" }
   let(:question_handle) { "favourite_number" }
@@ -21,21 +22,6 @@ RSpec.describe Twilio::PhoneReceiveRecordingOperation, type: :operation do
       "RecordingStartTime"=>"Thu, 06 Jun 2019 23:17:34 +0000",
       "ErrorCode" => "0",
     }
-  }
-  let(:phone_call) {
-    PhoneCall.create!(
-      number: "+12048005721",
-      caller_number: "+16135551234",
-      caller_city: "OTTAWA",
-      caller_province: "ON",
-      caller_country: "CA",
-      sid: call_sid,
-    )
-  }
-  let(:response) {
-    phone_call.responses.create!(
-      question_handle: question_handle,
-    )
   }
 
   before do

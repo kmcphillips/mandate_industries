@@ -2,30 +2,29 @@
 require 'rails_helper'
 
 RSpec.describe Twilio::PhoneGreetingOperation, type: :operation do
-  let(:account_sid) { "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
-  let(:auth_token) { "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" }
-  let(:call_sid) { "CA5073183d7484999999999999747bf790" }
+  include_examples "twilio API call"
+
   let(:params) {
     {
-      "Called" => "+12048005721",
+      "Called" => to_number,
       "ToState" => "MB",
       "CallerCountry" => "CA",
       "Direction" => "inbound",
       "CallerState" => "ON",
       "ToZip" => "",
       "CallSid" => call_sid,
-      "To" => "+12048005721",
+      "To" => to_number,
       "CallerZip" => "",
       "ToCountry" => "CA",
       "ApiVersion" => "2010-04-01",
       "CalledZip" => "",
       "CalledCity" => "WINNIPEG",
       "CallStatus" => "ringing",
-      "From" => "+16135551234",
+      "From" => from_number,
       "AccountSid" => account_sid,
       "CalledCountry" => "CA",
       "CallerCity" => "OTTAWA",
-      "Caller" => "+16135551234",
+      "Caller" => from_number,
       "FromCountry" => "CA",
       "ToCity" => "WINNIPEG",
       "FromCity" => "OTTAWA",
@@ -45,9 +44,9 @@ RSpec.describe Twilio::PhoneGreetingOperation, type: :operation do
     it "creates a call record" do
       expect{ described_class.call(params: params) }.to change{ PhoneCall.count }.by(1)
       phone_call = PhoneCall.last
-      expect(phone_call.sid).to eq("CA5073183d7484999999999999747bf790")
-      expect(phone_call.number).to eq("+12048005721")
-      expect(phone_call.caller_number).to eq("+16135551234")
+      expect(phone_call.sid).to eq(call_sid)
+      expect(phone_call.number).to eq(to_number)
+      expect(phone_call.caller_number).to eq(from_number)
       expect(phone_call.caller_city).to eq("OTTAWA")
       expect(phone_call.caller_province).to eq("ON")
       expect(phone_call.caller_country).to eq("CA")

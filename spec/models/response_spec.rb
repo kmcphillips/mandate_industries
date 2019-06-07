@@ -1,5 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Response, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:response) { create(:response) }
+
+  it "is valid" do
+    expect(response).to be_valid
+  end
 end

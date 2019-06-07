@@ -2,9 +2,9 @@
 require 'rails_helper'
 
 RSpec.describe Twilio::PhoneSurveyQuestionResponseOperation, type: :operation do
-  let(:account_sid) { "ACaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
-  let(:auth_token) { "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" }
-  let(:call_sid) { "CA5073183d7484999999999999747bf790" }
+  include_examples "twilio API call"
+
+  let(:phone_call) { create(:phone_call, number: to_number, caller_number: from_number, sid: call_sid) }
   let(:question_handle) { "favourite_number" }
   let(:params) {
     {
@@ -35,16 +35,6 @@ RSpec.describe Twilio::PhoneSurveyQuestionResponseOperation, type: :operation do
       "FromState" => "ON",
       "Digits" => "5",
     }
-  }
-  let(:phone_call) {
-    PhoneCall.create!(
-      number: "+12048005721",
-      caller_number: "+16135551234",
-      caller_city: "OTTAWA",
-      caller_province: "ON",
-      caller_country: "CA",
-      sid: call_sid,
-    )
   }
 
   before do
