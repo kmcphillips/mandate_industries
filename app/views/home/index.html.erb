@@ -17,8 +17,8 @@
               <% elsif response.prompt_handle == "second_favourite_number" %>
                 Their second favourite number is <%= response.digits.presence || "unknown" %>.
               <% elsif response.prompt_handle == "favourite_number_reason" %>
-                <% if response.recording %>
-                  They had <%= link_to("this", response.recording.url) %> to say about it.
+                <% if response.recording && response.recording.audio.attached? %>
+                  They had <%= link_to("this", rails_blob_path(response.recording.audio, disposition: "attachment")) %> to say about it.
                 <% else %>
                   <!-- no recording yet response_id=<%= response.id %> -->
                 <% end %>

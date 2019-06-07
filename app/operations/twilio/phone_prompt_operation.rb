@@ -28,9 +28,9 @@ module Twilio
         when "favourite_number_reason"
           twiml.say(voice: voice, message: "Your favourite numbers have been recorded. Now, please state after the tone your reason for picking those numbers as your favourites.")
           twiml.record(
-            max_length: 3,
+            max_length: 4,
             play_beep: true,
-            trim: "trim-silence",
+            # trim: "trim-silence",
             action: "/twilio/phone/prompt/#{response.id}.xml",
             recording_status_callback: "/twilio/phone/receive_recording/#{response.id}",
           )

@@ -19,6 +19,8 @@ module Twilio
 
       Rails.logger.tagged(self.class) { |l| l.info("created #{recording.inspect}") }
 
+      recording.audio.attach(io: StringIO.new(Faraday.get(recording.url).body), filename: "mandate_recording.wav", content_type: "audio/wav")
+
       recording
     end
   end
