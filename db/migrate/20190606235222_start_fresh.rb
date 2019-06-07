@@ -13,7 +13,7 @@ class StartFresh < ActiveRecord::Migration[6.0]
     end
 
     create_table "recordings", force: :cascade do |t|
-      t.integer "phone_call_id", null: false
+      t.integer "phone_call_id", null: false, limit: 8
       t.string "recording_sid"
       t.string "duration"
       t.string "url"
@@ -23,15 +23,13 @@ class StartFresh < ActiveRecord::Migration[6.0]
     end
 
     create_table "responses", force: :cascade do |t|
-      t.integer "phone_call_id"
+      t.integer "phone_call_id", limit: 8
       t.string "question_handle"
       t.string "digits"
       t.datetime "created_at", precision: 6, null: false
       t.datetime "updated_at", precision: 6, null: false
-      t.integer "recording_id"
+      t.integer "recording_id", limit: 8
       t.index ["phone_call_id", "question_handle"], name: "index_responses_on_phone_call_id_and_question_handle"
     end
-
-    add_foreign_key "recordings", "phone_calls"
   end
 end
