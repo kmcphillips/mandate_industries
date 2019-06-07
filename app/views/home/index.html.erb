@@ -1,3 +1,9 @@
+<script>
+  setTimeout(function() {
+    location.reload();
+  }, 4000);
+</script>
+
 <h1>Welcome to Mandate Industries</h1>
 <h2>Please call <%= formatted_phone(Rails.application.credentials.twilio![:phone_number]) %> for service</h2>
 
@@ -18,7 +24,7 @@
                 Their second favourite number is <%= response.digits.presence || "unknown" %>.
               <% elsif response.prompt_handle == "favourite_number_reason" %>
                 <% if response.recording && response.recording.audio.attached? %>
-                  They had <%= link_to("this", rails_blob_path(response.recording.audio, disposition: "attachment")) %> to say about it.
+                  They <%= link_to("left feedback for their reasons", rails_blob_path(response.recording.audio, disposition: "attachment")) %>.
                 <% else %>
                   <!-- no recording yet response_id=<%= response.id %> -->
                 <% end %>
