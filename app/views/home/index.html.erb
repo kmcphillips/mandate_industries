@@ -2,18 +2,26 @@
 <h2>Please call <%= formatted_phone(Rails.application.credentials.twilio![:phone_number]) %> for service</h2>
 
 <% if @phone_calls.any? %>
+  <h3>Recent satisfied customers:</h3>
+
   <% @phone_calls.each do |phone_call| %>
     <p>
       A customer from <%= caller_location(phone_call) %> called from <%= formatted_phone(phone_call.caller_number) %> called <%= distance_of_time_in_words(Time.now, phone_call.created_at) %> ago.
       <!-- <%= phone_call.sid %> -->
       <% if phone_call.responses.any? %>
         <ul>
-          <% phone_call.responses.each do |response| %>
+          <% phone_call.responses.order(created_at: :asc).each do |response| %>
             <li>
               <% if response.prompt_handle == "favourite_number" %>
                 Their favourite number is <%= response.digits.presence || "unknown" %>.
+              <% elsif response.prompt_handle == "second_favourite_number" %>
+                Their second favourite number is <%= response.digits.presence || "unknown" %>.
               <% elsif response.prompt_handle == "favourite_number_reason" %>
-                Their reason is <%= response.digits.presence || "unknown" %>.
+                <% if response.recording %>
+                  They had <%= link_to("this", response.recording.url) %> to say about it.
+                <% else %>
+                  <!-- no recording yet response_id=<%= response.id %> -->
+                <% end %>
               <% else %>
                 They answered a question "<%= response.prompt_handle %>".
               <% end %>
