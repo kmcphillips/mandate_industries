@@ -18,10 +18,10 @@
         <ul>
           <% phone_call.responses.order(created_at: :asc).each do |response| %>
             <li>
-              <% if response.prompt_handle == "favourite_number" %>
-                Their favourite number is <%= response.digits.presence || "unknown" %>.
-              <% elsif response.prompt_handle == "second_favourite_number" %>
-                Their second favourite number is <%= response.digits.presence || "unknown" %>.
+              <% if response.prompt_handle == "favourite_number" && response.digits.presence %>
+                Their favourite number is <%= response.digits.presence %>.
+              <% elsif response.prompt_handle == "second_favourite_number" && response.digits.presence %>
+                Their second favourite number is <%= response.digits.presence %>.
               <% elsif response.prompt_handle == "favourite_number_reason" %>
                 <% if response.recording && response.recording.audio.attached? %>
                   They <%= link_to("left feedback for their reasons", rails_blob_path(response.recording.audio, disposition: "attachment")) %>.
