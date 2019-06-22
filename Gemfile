@@ -5,7 +5,7 @@ ruby '2.6.0'
 
 gem 'rails', '~> 6.0.0.rc1'
 gem 'mysql2', '>= 0.4.4'
-gem 'puma', '~> 3.11'
+gem 'puma', '~> 3.12'
 gem 'sass-rails', '~> 5'
 gem 'webpacker', '~> 4.0'
 gem 'turbolinks', '~> 5'
@@ -30,9 +30,5 @@ group :development do
   gem 'capistrano', '3.6.1'
   gem 'capistrano-rails'
   gem 'capistrano-rbenv'
-  gem 'capistrano3-unicorn'
-end
-
-group :production do
-  gem 'unicorn'
+  gem 'capistrano3-puma'
 end

@@ -11,10 +11,6 @@ after 'deploy:publishing', 'deploy:restart'
 after "deploy:publishing", "deploy:symlink_shared_files"
 
 namespace :deploy do
-  task :restart do
-    invoke 'unicorn:legacy_restart'
-  end
-
   task :symlink_shared_files do
     on roles(:app) do
       execute "ln -s #{ shared_path }/keybase.txt #{ release_path }/public/keybase.txt"
