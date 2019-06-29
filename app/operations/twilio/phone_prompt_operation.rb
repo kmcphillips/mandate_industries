@@ -4,7 +4,10 @@ module Twilio
     input :incoming_response_id, accepts: Integer, type: :keyword, required: false
 
     def execute
-      response = phone_call.responses.create!(prompt_handle: next_prompt_handle) if next_prompt_handle
+      if next_prompt_handle
+        response = phone_call.responses.create!(prompt_handle: next_prompt_handle)
+        PhoneCallChannel.broadcast_recent
+      end
 
       Rails.logger.tagged(self.class) { |l| l.info("created #{response.inspect}") }
 

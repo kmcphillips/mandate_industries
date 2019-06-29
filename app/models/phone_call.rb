@@ -4,4 +4,6 @@ class PhoneCall < ApplicationRecord
 
   has_many :responses
   has_many :recordings
+
+  scope :recent, -> { order(created_at: :desc).limit(10) }
 end

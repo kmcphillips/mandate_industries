@@ -21,6 +21,8 @@ module Twilio
 
       recording.audio.attach(io: StringIO.new(Faraday.get(recording.url).body), filename: "mandate_recording.wav", content_type: "audio/wav")
 
+      PhoneCallChannel.broadcast_recent
+
       recording
     end
   end

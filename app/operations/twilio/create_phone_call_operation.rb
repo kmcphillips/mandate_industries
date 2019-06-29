@@ -18,6 +18,8 @@ module Twilio
 
       send_notifications
 
+      PhoneCallChannel.broadcast_recent
+
       phone_call
     end
 

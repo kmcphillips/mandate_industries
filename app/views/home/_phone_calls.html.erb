@@ -1,0 +1,35 @@
+<% if phone_calls.any? %>
+  <h3>Recent satisfied customers:</h3>
+
+  <% phone_calls.each do |phone_call| %>
+    <p>
+      A customer from <%= caller_location(phone_call) %> called from <%= formatted_phone(phone_call.caller_number) %> called <%= distance_of_time_in_words(Time.now, phone_call.created_at) %> ago.
+      <!-- <%= phone_call.sid %> -->
+      <% if phone_call.responses.any? %>
+        <ul>
+          <% phone_call.responses.order(created_at: :asc).each do |response| %>
+            <% if response.prompt_handle == "favourite_number" %>
+              <% if response.digits.presence %>
+                <li>Their favourite number is <%= response.digits.presence %>.</li>
+              <% end %>
+            <% elsif response.prompt_handle == "second_favourite_number" %>
+              <% if response.digits.presence %>
+                <li>Their second favourite number is <%= response.digits.presence %>.</li>
+              <% end %>
+            <% elsif response.prompt_handle == "favourite_number_reason" %>
+              <% if response.recording && response.recording.audio.attached? %>
+                <li>They <%= link_to("left feedback for their reasons", rails_blob_path(response.recording.audio, disposition: "attachment")) %>.</li>
+              <% else %>
+                <!-- no recording yet response_id=<%= response.id %> -->
+              <% end %>
+            <% else %>
+              <li>They answered an unknown question "<%= response.prompt_handle %>".</li>
+            <% end %>
+          <% end %>
+        </ul>
+      <% end %>
+    </p>
+  <% end %>
+<% else %>
+  <h3>No customers have called yet.</h3>
+<% end %>

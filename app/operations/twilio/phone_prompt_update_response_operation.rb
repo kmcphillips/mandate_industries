@@ -9,6 +9,8 @@ module Twilio
       if digits.present?
         response.digits = digits
         response.save!
+
+        PhoneCallChannel.broadcast_recent
       end
     end
 
