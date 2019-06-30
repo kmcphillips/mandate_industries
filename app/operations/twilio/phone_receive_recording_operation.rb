@@ -14,12 +14,10 @@ module Twilio
       )
       recording.save!
 
+      recording.audio.attach(io: StringIO.new(Faraday.get(recording.url).body), filename: "mandate_recording.wav", content_type: "audio/wav")
+
       response.recording = recording
       response.save!
-
-      Rails.logger.tagged(self.class) { |l| l.info("created #{recording.inspect}") }
-
-      recording.audio.attach(io: StringIO.new(Faraday.get(recording.url).body), filename: "mandate_recording.wav", content_type: "audio/wav")
 
       PhoneCallChannel.broadcast_recent
 
