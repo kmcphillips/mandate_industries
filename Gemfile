@@ -13,7 +13,7 @@ gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 # gem 'image_processing', '~> 1.2'
 gem 'bootsnap', '>= 1.4.2', require: false
-
+gem 'sidekiq'
 gem 'twilio-ruby'
 gem 'active_operation'
 gem 'kaminari'
@@ -32,4 +32,5 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-rbenv'
   gem 'capistrano3-puma'
+  gem 'capistrano-sidekiq'
 end

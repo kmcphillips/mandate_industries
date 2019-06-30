@@ -40,3 +40,7 @@ set :keep_releases, 2
 
 # puma
 set :puma_user, 'deploy'
+
+# sidekiq
+set :sidekiq_options, ["-q default -q mailers"]
+# set :init_system, :systemd
