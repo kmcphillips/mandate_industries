@@ -22,7 +22,7 @@ end
 namespace :sidekiq do
   task :restart do
     on roles(:app) do
-      execute "sudo service sidekiq-mandate.kev.cool start"
+      execute "sudo service sidekiq-mandate.kev.cool restart"
     end
   end
 end
