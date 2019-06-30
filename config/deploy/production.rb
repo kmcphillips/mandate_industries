@@ -7,8 +7,9 @@ role :db, "app1.kev.cool"
 
 server "app1.kev.cool", user: "deploy", roles: %w{app db web}
 
-after 'deploy:publishing', 'deploy:restart'
+after 'deploy:publishing', "deploy:restart"
 after "deploy:publishing", "deploy:symlink_shared_files"
+after "deploy:publishing", "sidekiq:restart"
 
 namespace :deploy do
   task :symlink_shared_files do
@@ -18,6 +19,13 @@ namespace :deploy do
   end
 end
 
+namespace :sidekiq do
+  task :restart do
+    on roles(:app) do
+      execute "sudo service sidekiq-mandate.kev.cool start"
+    end
+  end
+end
 
 
 # server-based syntax
