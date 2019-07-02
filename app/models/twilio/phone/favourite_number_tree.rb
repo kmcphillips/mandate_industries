@@ -25,7 +25,7 @@ class Twilio::Phone::FavouriteNumberTree < Twilio::Phone::BaseTree
       number: 1,
     },
     after: ->(response) {
-      prev_fav = response.phone_call.responses.find_by(prompt_handle: "favourite_number").last
+      prev_fav = response.phone_call.responses.find_by(prompt_handle: "favourite_number")
 
       if prev_fav.digits == response.digits
         {
