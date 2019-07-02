@@ -13,7 +13,7 @@ module Twilio
         end
 
         def for(tree_name)
-          preload_trees if Rails.env.development?
+          preload_trees if Rails.env.development? || Rails.env.test?
           trees[tree_name] || raise(Twilio::Phone::Tree::InvalidError, "tree #{tree_name} not found")
         end
 
