@@ -41,21 +41,8 @@ module Twilio
         @config[:voice] = "male"
       end
 
-      def greeting_twiml(phone_call, after=nil)
-        after ||= greeting
-        response = phone_call.responses.create!(prompt_handle: after.prompt)
-
-        twiml_response = Twilio::TwiML::VoiceResponse.new do |twiml|
-          twiml.say(voice: config[:voice], message: after.message) if after.message.present?
-          if after.hangup?
-            twiml.hangup
-          else
-            twiml.redirect("/twilio/phone/#{name}/prompt/#{response.id}.xml")
-          end
-        end
-
-        Rails.logger.info("greeting_twiml: #{twiml_response.to_s}")
-        twiml_response.to_s
+      def greeting_twiml(phone_call)
+        after_twiml(phone_call, greeting, nil)
       end
 
       def prompt_twiml(phone_call, response_id)
@@ -98,7 +85,29 @@ module Twilio
 
         Twilio::PhonePromptUpdateResponseOperation.call(params: params_hash, response_id: response.id, phone_call_id: phone_call.id)
 
-        greeting_twiml(phone_call, prompt.after)
+        after_twiml(phone_call, prompt.after, response.reload)
+      end
+
+      private
+
+      def after_twiml(phone_call, after, previous_response)
+        if after.proc?
+          after = Twilio::Phone::Tree::After.new(after.proc.call(previous_response))
+        end
+
+        response = phone_call.responses.create!(prompt_handle: after.prompt) unless after.hangup?
+
+        twiml_response = Twilio::TwiML::VoiceResponse.new do |twiml|
+          twiml.say(voice: config[:voice], message: after.message) if after.message.present?
+          if after.hangup?
+            twiml.hangup
+          else
+            twiml.redirect("/twilio/phone/#{name}/prompt/#{response.id}.xml")
+          end
+        end
+
+        Rails.logger.info("after_twiml: #{twiml_response.to_s}")
+        twiml_response.to_s
       end
 
       class Prompt
@@ -117,7 +126,7 @@ module Twilio
       end
 
       class After
-        attr_reader :message, :prompt
+        attr_reader :message, :prompt, :proc
 
         def initialize(args)
           case args
@@ -136,6 +145,10 @@ module Twilio
           else
             raise Twilio::Phone::Tree::InvalidError, "cannot parse :after from #{args.inspect}"
           end
+        end
+
+        def proc?
+          @proc.present?
         end
 
         def hangup?
