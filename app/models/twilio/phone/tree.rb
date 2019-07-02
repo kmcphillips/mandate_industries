@@ -13,6 +13,7 @@ module Twilio
         end
 
         def for(tree_name)
+          preload_trees if Rails.env.development?
           trees[tree_name] || raise(Twilio::Phone::Tree::InvalidError, "tree #{tree_name} not found")
         end
 
@@ -20,6 +21,11 @@ module Twilio
 
         def trees
           @trees ||= {}.with_indifferent_access
+        end
+
+        def preload_trees
+          # TODO: This hacks around loading in dev environment
+          Twilio::Phone::FavouriteNumberTree
         end
       end
 
@@ -39,22 +45,25 @@ module Twilio
         after ||= greeting
         response = phone_call.responses.create!(prompt_handle: after.prompt)
 
-        Twilio::TwiML::VoiceResponse.new do |twiml|
+        twiml_response = Twilio::TwiML::VoiceResponse.new do |twiml|
           twiml.say(voice: config[:voice], message: after.message) if after.message.present?
           if after.hangup?
             twiml.hangup
           else
-            twiml.redirect("/twilio/phone/#{name}/prompt/#{response.id}")
+            twiml.redirect("/twilio/phone/#{name}/prompt/#{response.id}.xml")
           end
-        end.to_s
+        end
+
+        Rails.logger.info("greeting_twiml: #{twiml_response.to_s}")
+        twiml_response.to_s
       end
 
       def prompt_twiml(phone_call, response_id)
         response = phone_call.responses.find(response_id)
         prompt = prompts[response.prompt_handle]
 
-        Twilio::TwiML::VoiceResponse.new do |twiml|
-          twiml.say(voice: config[:voice], message: greeting.message) if greeting.message.present?
+        twiml_response = Twilio::TwiML::VoiceResponse.new do |twiml|
+          twiml.say(voice: config[:voice], message: prompt.message) if prompt.message.present?
           case prompt.gather.type
           when :digits
             twiml.gather(
@@ -77,14 +86,17 @@ module Twilio
             raise Twilio::Phone::Tree::InvalidError, "unknown gather type #{prompt.gather.type.inspect}"
           end
           # TODO timeout and continue
-        end.to_s
+        end
+
+        Rails.logger.info("prompt_twiml: #{twiml_response.to_s}")
+        twiml_response.to_s
       end
 
       def prompt_response_twiml(phone_call, response_id, params_hash)
         response = phone_call.responses.find(response_id)
         prompt = prompts[response.prompt_handle]
 
-        Twilio::PhonePromptUpdateResponseOperation.call(params: params_hash, response_id: response.id)
+        Twilio::PhonePromptUpdateResponseOperation.call(params: params_hash, response_id: response.id, phone_call_id: phone_call.id)
 
         greeting_twiml(phone_call, prompt.after)
       end
