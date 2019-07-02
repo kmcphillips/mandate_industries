@@ -35,6 +35,59 @@ module Twilio
         @config[:voice] = "male"
       end
 
+      def greeting_twiml(phone_call, after=nil)
+        after ||= greeting
+        response = phone_call.responses.create!(prompt_handle: after.prompt)
+
+        Twilio::TwiML::VoiceResponse.new do |twiml|
+          twiml.say(voice: config[:voice], message: after.message) if after.message.present?
+          if after.hangup?
+            twiml.hangup
+          else
+            twiml.redirect("/twilio/phone/#{name}/prompt/#{response.id}")
+          end
+        end.to_s
+      end
+
+      def prompt_twiml(phone_call, response_id)
+        response = phone_call.responses.find(response_id)
+        prompt = prompts[response.prompt_handle]
+
+        Twilio::TwiML::VoiceResponse.new do |twiml|
+          twiml.say(voice: config[:voice], message: greeting.message) if greeting.message.present?
+          case prompt.gather.type
+          when :digits
+            twiml.gather(
+              action: "/twilio/phone/#{name}/prompt_response/#{response.id}.xml",
+              input: "dtmf",
+              num_digits: prompt.gather.args[:number],
+              timeout: prompt.gather.args[:timeout],
+              action_on_empty_result: false
+            )
+          when :voice
+            twiml.record(
+              max_length: prompt.gather.args[:length],
+              play_beep: prompt.gather.args[:beep],
+              # trim: "trim-silence",
+              action: "/twilio/phone/#{name}/prompt_response/#{response.id}.xml",
+              recording_status_callback: "/twilio/phone/receive_recording/#{response.id}",
+            )
+          else
+            raise Twilio::Phone::Tree::InvalidError, "unknown gather type #{prompt.gather.type.inspect}"
+          end
+          # TODO timeout and continue
+        end.to_s
+      end
+
+      def prompt_response_twiml(phone_call, response_id, params_hash)
+        response = phone_call.responses.find(response_id)
+        prompt = prompts[response.prompt_handle]
+
+        Twilio::PhonePromptUpdateResponseOperation.call(params: params_hash, response_id: response.id)
+
+        greeting_twiml(phone_call, prompt.after)
+      end
+
       class Prompt
         attr_reader :name, :message, :gather, :after
 
@@ -90,7 +143,13 @@ module Twilio
 
             raise Twilio::Phone::Tree::InvalidError, "gather :type must be :digits or :voice but was #{@type.inspect}" unless [:digits, :voice].include?(@type)
 
-            # TODO
+            if digits?
+              @args[:timeout] ||= 5
+              @args[:number] ||= 1
+            elsif voice?
+              @args[:length] ||= 10
+              @args[:beep] = true unless @args.key?(:beep)
+            end
           else
             raise Twilio::Phone::Tree::InvalidError, "cannot parse :gather from #{args.inspect}"
           end

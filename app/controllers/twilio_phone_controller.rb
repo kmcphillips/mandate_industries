@@ -8,7 +8,7 @@ class TwilioPhoneController < ApplicationController
     respond_to do |format|
       format.xml do
         phone_call = Twilio::CreatePhoneCallOperation.call(params: params_hash)
-        render xml: Twilio::PhonePromptOperation.call(phone_call_id: phone_call.id, incoming_response_id: nil)
+        render xml: tree.greeting_twiml(phone_call)
       end
     end
   end
@@ -17,8 +17,16 @@ class TwilioPhoneController < ApplicationController
     respond_to do |format|
       format.xml do
         phone_call = Twilio::FindPhoneCallOperation.call(params: params_hash)
-        Twilio::PhonePromptUpdateResponseOperation.call(phone_call_id: phone_call.id, response_id: params[:response_id].to_i, params: params_hash)
-        render xml: Twilio::PhonePromptOperation.call(phone_call_id: phone_call.id, incoming_response_id: params[:response_id].to_i)
+        render xml: tree.prompt_twiml(phone_call, params[:response_id])
+      end
+    end
+  end
+
+  def prompt_response
+    respond_to do |format|
+      format.xml do
+        phone_call = Twilio::FindPhoneCallOperation.call(params: params_hash)
+        render xml: tree.prompt_response_twiml(phone_call, params[:response_id], params_hash)
       end
     end
   end
@@ -46,7 +54,11 @@ class TwilioPhoneController < ApplicationController
     end
   end
 
+  def tree
+    @tree ||= Twilio::Phone::Tree.for(params[:tree_name])
+  end
+
   def params_hash
-    params.permit!.to_h.except("controller", "action", "format", "response_id", "prompt_handle")
+    params.permit!.to_h.except("controller", "action", "format", "response_id", "tree_name")
   end
 end

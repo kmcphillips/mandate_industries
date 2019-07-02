@@ -37,6 +37,10 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
     end
   end
 
+  describe "#greeting" do
+    it "should be tested"
+  end
+
   describe Twilio::Phone::Tree::Prompt, type: :model do
     describe "#initialize" do
       let(:valid_attributes) { { name: "asdf", message: "hello", gather: { type: :digits }, after: :hangup } }

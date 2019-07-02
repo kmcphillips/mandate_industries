@@ -50,5 +50,4 @@ class Twilio::Phone::FavouriteNumberTree < Twilio::Phone::BaseTree
       hangup: true,
       message: "Thank you for your time",
     }
-
 end
