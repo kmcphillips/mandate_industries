@@ -2,7 +2,7 @@
 class Twilio::Phone::FavouriteNumberTree < Twilio::Phone::BaseTree
   voice "male"
 
-  greeting message: "Hello, and thank you for calling Mandate Industries Incorporated!",
+  greeting message: ->(response) { "Hello, and thank you for calling Mandate Industries Incorporated!" },
     prompt: :favourite_number
 
   prompt :favourite_number,
@@ -14,7 +14,7 @@ class Twilio::Phone::FavouriteNumberTree < Twilio::Phone::BaseTree
     },
     after: {
       prompt: :second_favourite_number,
-      message: "Thank you for your selection."
+      message: ->(response) { "Thank you for your selection." }
     }
 
   prompt :second_favourite_number,

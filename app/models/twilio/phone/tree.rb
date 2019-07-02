@@ -50,7 +50,12 @@ module Twilio
         prompt = prompts[response.prompt_handle]
 
         twiml_response = Twilio::TwiML::VoiceResponse.new do |twiml|
-          twiml.say(voice: config[:voice], message: prompt.message) if prompt.message.present?
+          if prompt.message.present?
+            message = prompt.message
+            message = message.call(response) if message.is_a?(Proc)
+            twiml.say(voice: config[:voice], message: message)
+          end
+
           case prompt.gather.type
           when :digits
             twiml.gather(
@@ -91,14 +96,17 @@ module Twilio
       private
 
       def after_twiml(phone_call, after, previous_response)
-        if after.proc?
-          after = Twilio::Phone::Tree::After.new(after.proc.call(previous_response))
-        end
+        after = Twilio::Phone::Tree::After.new(after.proc.call(previous_response)) if after.proc
 
         response = phone_call.responses.create!(prompt_handle: after.prompt) unless after.hangup?
 
         twiml_response = Twilio::TwiML::VoiceResponse.new do |twiml|
-          twiml.say(voice: config[:voice], message: after.message) if after.message.present?
+          if after.message.present?
+            message = after.message
+            message = message.call(response) if message.is_a?(Proc)
+            twiml.say(voice: config[:voice], message: message)
+          end
+
           if after.hangup?
             twiml.hangup
           else
@@ -118,7 +126,7 @@ module Twilio
           raise Twilio::Phone::Tree::InvalidError, "prompt name cannot be blank" if @name.blank?
 
           @message = message.presence
-          raise Twilio::Phone::Tree::InvalidError, "message must be a string" if @message && !@message.is_a?(String)
+          raise Twilio::Phone::Tree::InvalidError, "message must be a string or proc" if @message && !(@message.is_a?(String) || @message.is_a?(Proc))
 
           @gather = Twilio::Phone::Tree::Gather.new(gather)
           @after = Twilio::Phone::Tree::After.new(after)
@@ -137,18 +145,16 @@ module Twilio
           when Hash
             args = args.with_indifferent_access
             @prompt = args[:prompt]&.to_sym
-            @message = args[:message]
             @hangup = !!args[:hangup]
+
+            @message = args[:message]
+            raise Twilio::Phone::Tree::InvalidError, "message must be a string or proc" if @message && !(@message.is_a?(String) || @message.is_a?(Proc))
 
             raise Twilio::Phone::Tree::InvalidError, "cannot have both prompt: and hangup:" if @prompt && @hangup
             raise Twilio::Phone::Tree::InvalidError, "must have either prompt: or hangup:" unless @prompt || @hangup
           else
             raise Twilio::Phone::Tree::InvalidError, "cannot parse :after from #{args.inspect}"
           end
-        end
-
-        def proc?
-          @proc.present?
         end
 
         def hangup?
