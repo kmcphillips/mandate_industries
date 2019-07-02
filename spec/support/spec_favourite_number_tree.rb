@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Twilio::Phone::FavouriteNumberTree < Twilio::Phone::BaseTree
+class Twilio::Phone::SpecFavouriteNumberTree < Twilio::Phone::BaseTree
   voice "male"
 
   greeting message: "Hello", prompt: :favourite_number

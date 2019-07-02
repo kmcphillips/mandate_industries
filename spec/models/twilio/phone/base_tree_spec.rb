@@ -26,7 +26,7 @@ RSpec.describe Twilio::Phone::BaseTree, type: :model do
   end
 
   context "with FavouriteNumberTree" do
-    let(:tree) { Twilio::Phone::Tree.for(:favourite_number) }
+    let(:tree) { Twilio::Phone::Tree.for(:spec_favourite_number) }
 
     it "sets the greeting" do
       expect(tree.greeting).to be_a(Twilio::Phone::Tree::After)

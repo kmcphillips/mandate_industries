@@ -71,6 +71,7 @@ module Twilio
               # trim: "trim-silence",
               action: "/twilio/phone/#{name}/prompt_response/#{response.id}.xml",
               recording_status_callback: "/twilio/phone/receive_recording/#{response.id}",
+              # TODO transcribe: prompt.gather.args[:transcribe]
             )
           else
             raise Twilio::Phone::Tree::InvalidError, "unknown gather type #{prompt.gather.type.inspect}"
@@ -149,6 +150,7 @@ module Twilio
             elsif voice?
               @args[:length] ||= 10
               @args[:beep] = true unless @args.key?(:beep)
+              @args[:transcribe] = false unless @args.key?(:transcribe)
             end
           else
             raise Twilio::Phone::Tree::InvalidError, "cannot parse :gather from #{args.inspect}"
