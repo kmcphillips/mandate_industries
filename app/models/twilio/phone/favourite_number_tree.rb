@@ -45,7 +45,7 @@ class Twilio::Phone::FavouriteNumberTree < Twilio::Phone::BaseTree
     gather: {
       type: :voice,
       length: 4,
-      # transcribe: true, # TODO
+      transcribe: true,
     },
     after: {
       hangup: true,

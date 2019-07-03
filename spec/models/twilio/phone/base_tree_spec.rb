@@ -82,7 +82,7 @@ RSpec.describe Twilio::Phone::BaseTree, type: :model do
           <?xml version="1.0" encoding="UTF-8"?>
           <Response>
           <Say voice="male">Now, please state after the tone your reason for picking those numbers as your favourites.</Say>
-          <Record action="/twilio/phone/favourite_number/prompt_response/#{ response.id }.xml" maxLength="4" playBeep="true" recordingStatusCallback="/twilio/phone/receive_recording/#{ response.id }"/>
+          <Record action="/twilio/phone/favourite_number/prompt_response/#{ response.id }.xml" maxLength="4" playBeep="true" recordingStatusCallback="/twilio/phone/receive_recording/#{ response.id }" transcribe="true" transcribeCallback="/twilio/phone/transcribe/#{ response.id }"/>
           </Response>
         EXPECTED
         expect(tree.prompt_twiml(phone_call, response.id.to_s)).to eq(expected)

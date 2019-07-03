@@ -7,7 +7,7 @@ RSpec.describe Twilio::PhonePromptUpdateResponseOperation, type: :operation do
   let(:phone_call) { create(:phone_call, number: to_number, caller_number: from_number, sid: call_sid) }
   let(:response) { create(:response, phone_call: phone_call, prompt_handle: prompt_handle) }
   let(:prompt_handle) { "favourite_number" }
-  let(:params) {
+  let(:base_params) {
     {
       "Called" => to_number,
       "ToState" => "MB",
@@ -34,19 +34,29 @@ RSpec.describe Twilio::PhonePromptUpdateResponseOperation, type: :operation do
       "CalledState" => "MB",
       "FromZip" => "",
       "FromState" => "ON",
-      "Digits" => "3",
     }
   }
+  let(:digit_params) { base_params.merge("Digits" => "3") }
+  let(:transcription_params) { base_params.merge("TranscriptionText" => "hello", "TranscriptionStatus" => "completed") }
 
   describe "#execute" do
     it "updates the digits if present" do
-      described_class.call(phone_call_id: phone_call.id, response_id: response.id, params: params)
+      expect(PhoneCallChannel).to receive(:broadcast_recent)
+      described_class.call(phone_call_id: phone_call.id, response_id: response.id, params: digit_params)
       expect(response.reload.digits).to eq("3")
     end
 
-    it "does not update the digits if they are not" do
-      described_class.call(phone_call_id: phone_call.id, response_id: response.id, params: {})
-      expect(response.reload.digits).to be_nil
+    it "updates the transcription if completed and present" do
+      expect(PhoneCallChannel).to receive(:broadcast_recent)
+      described_class.call(phone_call_id: phone_call.id, response_id: response.id, params: transcription_params)
+      expect(response.reload.transcription).to eq("hello")
+    end
+
+    it "does not update if nothing passed in" do
+      expect(PhoneCallChannel).to_not receive(:broadcast_recent)
+      expect {
+        described_class.call(phone_call_id: phone_call.id, response_id: response.id, params: base_params)
+      }.to_not change { response.reload.attributes }
     end
   end
 end

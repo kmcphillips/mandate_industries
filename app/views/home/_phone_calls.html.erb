@@ -22,6 +22,17 @@
               <% else %>
                 <!-- no recording yet response_id=<%= response.id %> -->
               <% end %>
+            <% elsif response.prompt_handle == "tell_a_story" %>
+              <li>
+                <% if response.transcription.present? %>
+                  They told a story that reads: <em><%= response.transcription %></em>
+                <% else %>
+                  They told a story.
+                <% end %>
+                <% if response.recording && response.recording.audio.attached? %>
+                  <%= link_to("Listen", rails_blob_path(response.recording.audio, disposition: "attachment")) %>.</li>
+                <% end %>
+              </li>
             <% else %>
               <li>They answered an unknown question "<%= response.prompt_handle %>".</li>
             <% end %>

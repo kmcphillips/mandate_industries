@@ -31,6 +31,17 @@ class TwilioPhoneController < ApplicationController
     end
   end
 
+  def transcribe
+    respond_to do |format|
+      format.xml do
+        phone_call = Twilio::FindPhoneCallOperation.call(params: params_hash)
+        Twilio::PhonePromptUpdateResponseOperation.call(phone_call_id: phone_call.id, response_id: params[:response_id].to_i, params: params_hash)
+
+        head :ok
+      end
+    end
+  end
+
   def receive_response_recording
     respond_to do |format|
       format.html do

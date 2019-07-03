@@ -9,6 +9,7 @@ module Twilio
 
       TREES = {
         favourite_number: "Twilio::Phone::FavouriteNumberTree",
+        storytime: "Twilio::Phone::StorytimeTree",
       }.freeze
 
       class << self
@@ -59,14 +60,20 @@ module Twilio
               action_on_empty_result: false
             )
           when :voice
-            twiml.record(
+            args = {
               max_length: prompt.gather.args[:length],
               play_beep: prompt.gather.args[:beep],
               # trim: "trim-silence",
               action: "/twilio/phone/#{name}/prompt_response/#{response.id}.xml",
               recording_status_callback: "/twilio/phone/receive_recording/#{response.id}",
-              # TODO transcribe: prompt.gather.args[:transcribe]
-            )
+            }
+
+            if prompt.gather.args[:transcribe]
+              args[:transcribe] = true
+              args[:transcribe_callback] = "/twilio/phone/transcribe/#{response.id}"
+            end
+
+            twiml.record(args)
           else
             raise Twilio::Phone::Tree::InvalidError, "unknown gather type #{prompt.gather.type.inspect}"
           end
