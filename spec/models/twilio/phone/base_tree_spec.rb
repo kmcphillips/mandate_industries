@@ -53,7 +53,7 @@ RSpec.describe Twilio::Phone::BaseTree, type: :model do
         expect(tree.greeting_twiml(phone_call)).to eq(expected)
       end
 
-      it "outputs prompt_twiml" do
+      it "outputs prompt_twiml vor digits" do
         expected = <<~EXPECTED
           <?xml version="1.0" encoding="UTF-8"?>
           <Response>
@@ -74,6 +74,18 @@ RSpec.describe Twilio::Phone::BaseTree, type: :model do
         EXPECTED
         expect(tree.prompt_response_twiml(phone_call, response.id, params_hash)).to eq(expected)
         expect(response.reload.digits).to eq("3")
+      end
+
+      it "outputs the prompt_twiml for voice" do
+        response.update(prompt_handle: "favourite_number_reason")
+        expected = <<~EXPECTED
+          <?xml version="1.0" encoding="UTF-8"?>
+          <Response>
+          <Say voice="male">Now, please state after the tone your reason for picking those numbers as your favourites.</Say>
+          <Record action="/twilio/phone/favourite_number/prompt_response/#{ response.id }.xml" maxLength="4" playBeep="true" recordingStatusCallback="/twilio/phone/receive_recording/#{ response.id }"/>
+          </Response>
+        EXPECTED
+        expect(tree.prompt_twiml(phone_call, response.id.to_s)).to eq(expected)
       end
     end
   end
