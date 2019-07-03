@@ -2,30 +2,16 @@
 require 'rails_helper'
 
 RSpec.describe Twilio::Phone::Tree, type: :model do
-  around do |example|
-    previous_trees = described_class.instance_variable_get("@trees")
-    described_class.instance_variable_set("@trees", nil)
-    example.run
-    described_class.instance_variable_set("@trees", previous_trees)
-  end
-
   let(:tree) { double }
-  let(:tree2) { double }
 
-  describe ".register and .for" do
-    it "sets the class by name" do
-      described_class.register("abc", tree)
-      expect(described_class.for("abc")).to eq(tree)
-    end
-
-    it "overrides" do
-      described_class.register("abc", tree)
-      described_class.register("abc", tree2)
-      expect(described_class.for("abc")).to eq(tree2)
+  describe ".for" do
+    it "loads the class by name" do
+      expect(described_class.for("favourite_number")).to be_a(Twilio::Phone::Tree)
+      expect(described_class.for("favourite_number").name).to eq("favourite_number")
     end
 
     it "raises if not found" do
-      expect { described_class.for("abc") }.to raise_error(Twilio::Phone::Tree::InvalidError)
+      expect { described_class.for("abc") }.to raise_error(NameError)
     end
   end
 

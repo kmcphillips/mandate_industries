@@ -8,13 +8,8 @@ module Twilio
       attr_accessor :greeting
 
       class << self
-        def register(tree_name, tree)
-          trees[tree_name] = tree
-        end
-
         def for(tree_name)
-          preload_trees if Rails.env.development? || Rails.env.test?
-          trees[tree_name] || raise(Twilio::Phone::Tree::InvalidError, "tree #{tree_name} not found")
+          trees[tree_name] ||= "Twilio::Phone::#{ tree_name.to_s.camelcase }Tree".constantize.tree
         end
 
         private
@@ -22,17 +17,11 @@ module Twilio
         def trees
           @trees ||= {}.with_indifferent_access
         end
-
-        def preload_trees
-          # TODO: This hacks around loading in dev environment
-          Twilio::Phone::FavouriteNumberTree
-        end
       end
 
       def initialize(tree_name)
         @name = tree_name.to_s
         raise Twilio::Phone::Tree::InvalidError, "tree name cannot be blank" unless name.present?
-        self.class.register(name, self)
 
         @prompts = {}.with_indifferent_access
         @config = {}.with_indifferent_access
