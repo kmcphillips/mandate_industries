@@ -7,9 +7,13 @@ module Twilio
       attr_reader :name, :prompts, :config
       attr_accessor :greeting
 
+      TREES = {
+        favourite_number: "Twilio::Phone::FavouriteNumberTree",
+      }.freeze
+
       class << self
         def for(tree_name)
-          trees[tree_name] ||= "Twilio::Phone::#{ tree_name.to_s.camelcase }Tree".constantize.tree
+          trees[tree_name] ||= TREES[tree_name&.to_sym].constantize.tree
         end
 
         private
