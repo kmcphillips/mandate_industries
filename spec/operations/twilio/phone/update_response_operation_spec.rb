@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Twilio::PhonePromptUpdateResponseOperation, type: :operation do
+RSpec.describe Twilio::Phone::UpdateResponseOperation, type: :operation do
   include_examples "twilio API call"
 
   let(:phone_call) { create(:phone_call, number: to_number, caller_number: from_number, sid: call_sid) }

@@ -7,7 +7,7 @@ class TwilioPhoneController < ApplicationController
   def greeting
     respond_to do |format|
       format.xml do
-        phone_call = Twilio::CreatePhoneCallOperation.call(params: params_hash)
+        phone_call = Twilio::Phone::CreateOperation.call(params: params_hash)
         render xml: tree.greeting_twiml(phone_call)
       end
     end
@@ -16,7 +16,7 @@ class TwilioPhoneController < ApplicationController
   def prompt
     respond_to do |format|
       format.xml do
-        phone_call = Twilio::FindPhoneCallOperation.call(params: params_hash)
+        phone_call = Twilio::Phone::FindOperation.call(params: params_hash)
         render xml: tree.prompt_twiml(phone_call, params[:response_id])
       end
     end
@@ -25,7 +25,7 @@ class TwilioPhoneController < ApplicationController
   def prompt_response
     respond_to do |format|
       format.xml do
-        phone_call = Twilio::FindPhoneCallOperation.call(params: params_hash)
+        phone_call = Twilio::Phone::FindOperation.call(params: params_hash)
         render xml: tree.prompt_response_twiml(phone_call, params[:response_id], params_hash)
       end
     end
@@ -34,8 +34,8 @@ class TwilioPhoneController < ApplicationController
   def transcribe
     respond_to do |format|
       format.xml do
-        phone_call = Twilio::FindPhoneCallOperation.call(params: params_hash)
-        Twilio::PhonePromptUpdateResponseOperation.call(phone_call_id: phone_call.id, response_id: params[:response_id].to_i, params: params_hash)
+        phone_call = Twilio::Phone::FindOperation.call(params: params_hash)
+        Twilio::Phone::UpdateResponseOperation.call(phone_call_id: phone_call.id, response_id: params[:response_id].to_i, params: params_hash)
 
         head :ok
       end
@@ -45,7 +45,7 @@ class TwilioPhoneController < ApplicationController
   def receive_response_recording
     respond_to do |format|
       format.html do
-        phone_call = Twilio::FindPhoneCallOperation.call(params: params_hash)
+        phone_call = Twilio::Phone::FindOperation.call(params: params_hash)
         Twilio::PhoneReceiveRecordingOperation.call(phone_call_id: phone_call.id, response_id: params[:response_id].to_i, params: params_hash)
 
         head :ok
@@ -59,7 +59,7 @@ class TwilioPhoneController < ApplicationController
     if params["AccountSid"] != Rails.application.credentials.twilio![:account_sid]
       respond_to do |format|
         format.xml do
-          render xml: Twilio::PhoneRespondErrorOperation.call()
+          render xml: Twilio::Twilio::Phone::Twiml::ErrorOperation.call()
         end
       end
     end

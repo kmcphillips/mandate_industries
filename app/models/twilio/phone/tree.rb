@@ -88,7 +88,7 @@ module Twilio
         response = phone_call.responses.find(response_id)
         prompt = prompts[response.prompt_handle]
 
-        Twilio::PhonePromptUpdateResponseOperation.call(params: params_hash, response_id: response.id, phone_call_id: phone_call.id)
+        Twilio::Phone::UpdateResponseOperation.call(params: params_hash, response_id: response.id, phone_call_id: phone_call.id)
 
         after_twiml(phone_call, prompt.after, response.reload)
       end

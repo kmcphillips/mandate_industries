@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Twilio::CreatePhoneCallOperation, type: :operation do
+RSpec.describe Twilio::Phone::CreateOperation, type: :operation do
   include_examples "twilio API call"
 
   let(:params) {
