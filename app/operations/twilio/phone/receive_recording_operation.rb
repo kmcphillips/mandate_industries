@@ -15,12 +15,10 @@ module Twilio
         )
         recording.save!
 
-        recording.audio.attach(io: StringIO.new(Faraday.get(recording.url).body), filename: "mandate_recording.wav", content_type: "audio/wav")
-
         response.recording = recording
         response.save!
 
-        PhoneCallChannel.broadcast_recent
+        Twilio::AttachRecordingJob.perform_later(recording_id: recording.id)
 
         recording
       end
