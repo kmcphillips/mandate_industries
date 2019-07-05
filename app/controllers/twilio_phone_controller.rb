@@ -17,7 +17,7 @@ class TwilioPhoneController < ApplicationController
     respond_to do |format|
       format.xml do
         phone_call = Twilio::Phone::FindOperation.call(params: params_hash)
-        render xml: Twilio::Phone::Twiml::PromptOperation.call(phone_call_id: phone_call.id, tree: tree, response_id: params[:response_id])
+        render xml: Twilio::Phone::Twiml::PromptOperation.call(phone_call_id: phone_call.id, tree: tree, response_id: params[:response_id].to_i)
       end
     end
   end
@@ -46,7 +46,7 @@ class TwilioPhoneController < ApplicationController
     respond_to do |format|
       format.html do
         phone_call = Twilio::Phone::FindOperation.call(params: params_hash)
-        Twilio::PhoneReceiveRecordingOperation.call(phone_call_id: phone_call.id, response_id: params[:response_id].to_i, params: params_hash)
+        Twilio::Phone::ReceiveRecordingOperation.call(phone_call_id: phone_call.id, response_id: params[:response_id].to_i, params: params_hash)
 
         head :ok
       end
