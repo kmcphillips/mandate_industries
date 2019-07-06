@@ -45,7 +45,6 @@ module Twilio
             else
               raise Twilio::Phone::Tree::InvalidError, "unknown gather type #{prompt.gather.type.inspect}"
             end
-            # TODO timeout and continue
           end
 
           Rails.logger.info("prompt_twiml: #{twiml_response.to_s}")

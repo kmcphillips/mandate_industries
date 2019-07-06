@@ -43,7 +43,7 @@ class Twilio::Phone::FavouriteNumberTree < Twilio::Phone::BaseTree
     }
 
   prompt :favourite_number_reason,
-    message: "Now, please state after the tone your reason for picking those numbers as your favourites.",
+    message: ->(response) { "Now, please state after the tone your reason for picking those numbers as your favourites." },
     gather: {
       type: :voice,
       length: 4,
