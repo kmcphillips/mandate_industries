@@ -33,6 +33,7 @@ module Twilio
 
         # defaults
         @config[:voice] = "male"
+        @config[:timeout_message] = nil
       end
 
       class Prompt
@@ -99,6 +100,7 @@ module Twilio
               @args[:length] ||= 10
               @args[:beep] = true unless @args.key?(:beep)
               @args[:transcribe] = false unless @args.key?(:transcribe)
+              @args[:profanity_filter] = false unless @args.key?(:profanity_filter)
             end
           else
             raise Twilio::Phone::Tree::InvalidError, "cannot parse :gather from #{args.inspect}"

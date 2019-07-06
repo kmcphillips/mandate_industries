@@ -8,6 +8,11 @@ module Twilio
           nil
         end
 
+        def timeout_message(message)
+          tree.config[:timeout_message] = message
+          nil
+        end
+
         def greeting(message: nil, prompt:)
           tree.greeting = Twilio::Phone::Tree::After.new(message: message, prompt: prompt)
           nil

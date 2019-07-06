@@ -2,6 +2,8 @@
 class Twilio::Phone::FavouriteNumberTree < Twilio::Phone::BaseTree
   voice "male"
 
+  timeout_message ->(response) { "We did not receive your response in time." }
+
   greeting message: ->(response) { "Hello, and thank you for calling Mandate Industries Incorporated!" },
     prompt: :favourite_number
 
@@ -25,7 +27,7 @@ class Twilio::Phone::FavouriteNumberTree < Twilio::Phone::BaseTree
       number: 1,
     },
     after: ->(response) {
-      prev_fav = response.phone_call.responses.find_by(prompt_handle: "favourite_number")
+      prev_fav = response.phone_call.responses.completed.find_by(prompt_handle: "favourite_number")
 
       if prev_fav.digits == response.digits
         {

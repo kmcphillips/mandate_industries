@@ -13,6 +13,7 @@ RSpec.describe Twilio::Phone::Twiml::PromptOperation, type: :operation do
         <Response>
         <Say voice="male">Using the keypad on your touch tone phone, please enter your favourite number.</Say>
         <Gather action="/twilio/phone/favourite_number/prompt_response/#{response.id}.xml" actionOnEmptyResult="false" input="dtmf" numDigits="1" timeout="10"/>
+        <Redirect>/twilio/phone/favourite_number/timeout/#{response.id}.xml</Redirect>
         </Response>
       EXPECTED
       expect(described_class.call(phone_call_id: phone_call.id, tree: tree, response_id: response.id)).to eq(expected)

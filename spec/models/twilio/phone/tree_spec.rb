@@ -19,7 +19,7 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
     let(:tree) { described_class.new(:example) }
 
     it "sets a config with defaults" do
-      expect(tree.config).to eq("voice" => "male")
+      expect(tree.config).to eq("voice" => "male", "timeout_message" => nil)
     end
   end
 

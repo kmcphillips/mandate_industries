@@ -31,6 +31,15 @@ class TwilioPhoneController < ApplicationController
     end
   end
 
+  def timeout
+    respond_to do |format|
+      format.xml do
+        phone_call = Twilio::Phone::FindOperation.call(params: params_hash)
+        render xml: Twilio::Phone::Twiml::TimeoutOperation.call(phone_call_id: phone_call.id, tree: tree, response_id: params[:response_id].to_i)
+      end
+    end
+  end
+
   def transcribe
     respond_to do |format|
       format.xml do

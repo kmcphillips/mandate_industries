@@ -4,4 +4,6 @@ class Response < ApplicationRecord
 
   belongs_to :phone_call
   belongs_to :recording, required: false
+
+  scope :completed, -> { where(timeout: false) }
 end

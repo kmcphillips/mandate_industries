@@ -26,6 +26,7 @@ module Twilio
                 timeout: prompt.gather.args[:timeout],
                 action_on_empty_result: false
               )
+              twiml.redirect("/twilio/phone/#{tree.name}/timeout/#{response.id}.xml")
             when :voice
               args = {
                 max_length: prompt.gather.args[:length],
