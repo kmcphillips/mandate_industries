@@ -2,8 +2,6 @@
 module Twilio
   module Phone
     class Tree
-      class InvalidError < StandardError ; end
-
       attr_reader :name, :prompts, :config
       attr_accessor :greeting
 
@@ -26,7 +24,7 @@ module Twilio
 
       def initialize(tree_name)
         @name = tree_name.to_s
-        raise Twilio::Phone::Tree::InvalidError, "tree name cannot be blank" unless name.present?
+        raise Twilio::InvalidTreeError, "tree name cannot be blank" unless name.present?
 
         @prompts = {}.with_indifferent_access
         @config = {}.with_indifferent_access
@@ -41,10 +39,10 @@ module Twilio
 
         def initialize(name:, message:, gather:, after:)
           @name = name&.to_sym
-          raise Twilio::Phone::Tree::InvalidError, "prompt name cannot be blank" if @name.blank?
+          raise Twilio::InvalidTreeError, "prompt name cannot be blank" if @name.blank?
 
           @message = message.presence
-          raise Twilio::Phone::Tree::InvalidError, "message must be a string or proc" if @message && !(@message.is_a?(String) || @message.is_a?(Proc))
+          raise Twilio::InvalidTreeError, "message must be a string or proc" if @message && !(@message.is_a?(String) || @message.is_a?(Proc))
 
           @gather = Twilio::Phone::Tree::Gather.new(gather)
           @after = Twilio::Phone::Tree::After.new(after)
@@ -66,12 +64,12 @@ module Twilio
             @hangup = !!args[:hangup]
 
             @message = args[:message]
-            raise Twilio::Phone::Tree::InvalidError, "message must be a string or proc" if @message && !(@message.is_a?(String) || @message.is_a?(Proc))
+            raise Twilio::InvalidTreeError, "message must be a string or proc" if @message && !(@message.is_a?(String) || @message.is_a?(Proc))
 
-            raise Twilio::Phone::Tree::InvalidError, "cannot have both prompt: and hangup:" if @prompt && @hangup
-            raise Twilio::Phone::Tree::InvalidError, "must have either prompt: or hangup:" unless @prompt || @hangup
+            raise Twilio::InvalidTreeError, "cannot have both prompt: and hangup:" if @prompt && @hangup
+            raise Twilio::InvalidTreeError, "must have either prompt: or hangup:" unless @prompt || @hangup
           else
-            raise Twilio::Phone::Tree::InvalidError, "cannot parse :after from #{args.inspect}"
+            raise Twilio::InvalidTreeError, "cannot parse :after from #{args.inspect}"
           end
         end
 
@@ -91,7 +89,7 @@ module Twilio
             @args = args.with_indifferent_access
             @type = @args.delete(:type)&.to_sym
 
-            raise Twilio::Phone::Tree::InvalidError, "gather :type must be :digits or :voice but was #{@type.inspect}" unless [:digits, :voice].include?(@type)
+            raise Twilio::InvalidTreeError, "gather :type must be :digits or :voice but was #{@type.inspect}" unless [:digits, :voice].include?(@type)
 
             if digits?
               @args[:timeout] ||= 5
@@ -103,7 +101,7 @@ module Twilio
               @args[:profanity_filter] = false unless @args.key?(:profanity_filter)
             end
           else
-            raise Twilio::Phone::Tree::InvalidError, "cannot parse :gather from #{args.inspect}"
+            raise Twilio::InvalidTreeError, "cannot parse :gather from #{args.inspect}"
           end
         end
 

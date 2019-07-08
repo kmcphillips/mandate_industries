@@ -19,7 +19,7 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
     let(:tree) { described_class.new(:example) }
 
     it "sets a config with defaults" do
-      expect(tree.config).to eq("voice" => "male", "timeout_message" => nil)
+      expect(tree.config).to eq({ "voice" => "male", "timeout_message" => nil })
     end
   end
 
@@ -40,7 +40,7 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
       end
 
       it "raises if message is something weird" do
-        expect { described_class.new(valid_attributes.merge(message: Object.new)) }.to raise_error(Twilio::Phone::Tree::InvalidError)
+        expect { described_class.new(valid_attributes.merge(message: Object.new)) }.to raise_error(Twilio::InvalidTreeError)
       end
 
       it "sets the prompt name" do
@@ -48,7 +48,7 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
       end
 
       it "raises if prompt name is not set" do
-        expect { described_class.new(valid_attributes.merge(name: nil)) }.to raise_error(Twilio::Phone::Tree::InvalidError)
+        expect { described_class.new(valid_attributes.merge(name: nil)) }.to raise_error(Twilio::InvalidTreeError)
       end
     end
   end
@@ -77,11 +77,11 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
         end
 
         it "raises without prompt or hangup" do
-          expect { described_class.new({}) }.to raise_error(Twilio::Phone::Tree::InvalidError)
+          expect { described_class.new({}) }.to raise_error(Twilio::InvalidTreeError)
         end
 
         it "raises with prompt and hangup" do
-          expect { described_class.new(prompt: :abc, hangup: true) }.to raise_error(Twilio::Phone::Tree::InvalidError)
+          expect { described_class.new(prompt: :abc, hangup: true) }.to raise_error(Twilio::InvalidTreeError)
         end
 
         it "sets the message" do
@@ -98,7 +98,7 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
       end
 
       it "does not accept nil" do
-        expect { described_class.new(nil) }.to raise_error(Twilio::Phone::Tree::InvalidError)
+        expect { described_class.new(nil) }.to raise_error(Twilio::InvalidTreeError)
       end
     end
   end
@@ -125,20 +125,20 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
         end
 
         it "and raises with invalid type" do
-          expect { described_class.new(type: :asdf) }.to raise_error(Twilio::Phone::Tree::InvalidError)
+          expect { described_class.new(type: :asdf) }.to raise_error(Twilio::InvalidTreeError)
         end
       end
 
       it "does not accept a string" do
-        expect { described_class.new("whatever") }.to raise_error(Twilio::Phone::Tree::InvalidError)
+        expect { described_class.new("whatever") }.to raise_error(Twilio::InvalidTreeError)
       end
 
       it "does not accept a symbol" do
-        expect { described_class.new(:asdf) }.to raise_error(Twilio::Phone::Tree::InvalidError)
+        expect { described_class.new(:asdf) }.to raise_error(Twilio::InvalidTreeError)
       end
 
       it "does not accept nil" do
-        expect { described_class.new(nil) }.to raise_error(Twilio::Phone::Tree::InvalidError)
+        expect { described_class.new(nil) }.to raise_error(Twilio::InvalidTreeError)
       end
     end
   end

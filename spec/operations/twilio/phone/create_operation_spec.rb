@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe Twilio::Phone::CreateOperation, type: :operation do
-  include_examples "twilio API call"
+  include_examples "twilio phone API call"
 
   let(:params) {
     {

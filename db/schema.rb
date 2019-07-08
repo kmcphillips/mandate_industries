@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_08_021800) do
+ActiveRecord::Schema.define(version: 2019_07_08_022631) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -31,6 +31,18 @@ ActiveRecord::Schema.define(version: 2019_07_08_021800) do
     t.string "checksum", null: false
     t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.integer "sms_conversation_id", limit: 8, null: false
+    t.string "sid"
+    t.text "body"
+    t.string "status"
+    t.string "direction"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["direction"], name: "index_messages_on_direction"
+    t.index ["sms_conversation_id"], name: "index_messages_on_sms_conversation_id"
   end
 
   create_table "phone_calls", force: :cascade do |t|
@@ -66,6 +78,17 @@ ActiveRecord::Schema.define(version: 2019_07_08_021800) do
     t.text "transcription"
     t.boolean "timeout", default: false
     t.index ["phone_call_id", "prompt_handle"], name: "index_responses_on_phone_call_id_and_prompt_handle"
+  end
+
+  create_table "sms_conversations", force: :cascade do |t|
+    t.string "number"
+    t.string "tree_name"
+    t.string "from_number"
+    t.string "from_city"
+    t.string "from_province"
+    t.string "from_country"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

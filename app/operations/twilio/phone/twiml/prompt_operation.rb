@@ -43,7 +43,7 @@ module Twilio
 
               twiml.record(args)
             else
-              raise Twilio::Phone::Tree::InvalidError, "unknown gather type #{prompt.gather.type.inspect}"
+              raise Twilio::InvalidTreeError, "unknown gather type #{prompt.gather.type.inspect}"
             end
           end
 
