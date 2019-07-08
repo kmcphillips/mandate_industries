@@ -3,7 +3,7 @@
 
   <% phone_calls.each do |phone_call| %>
     <p>
-      A customer from <%= caller_location(phone_call) %> called from <%= formatted_phone(phone_call.caller_number) %> called <%= distance_of_time_in_words(Time.now, phone_call.created_at) %> ago.
+      A customer from <%= from_location(phone_call) %> called from <%= formatted_phone(phone_call.from_number) %> called <%= distance_of_time_in_words(Time.now, phone_call.created_at) %> ago.
       <!-- <%= phone_call.sid %> -->
       <% if phone_call.responses.any? %>
         <ul>

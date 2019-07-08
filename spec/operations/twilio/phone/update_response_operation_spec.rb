@@ -4,7 +4,7 @@ require 'rails_helper'
 RSpec.describe Twilio::Phone::UpdateResponseOperation, type: :operation do
   include_examples "twilio API call"
 
-  let(:phone_call) { create(:phone_call, number: to_number, caller_number: from_number, sid: call_sid) }
+  let(:phone_call) { create(:phone_call, number: to_number, from_number: from_number, sid: call_sid) }
   let(:response) { create(:response, phone_call: phone_call, prompt_handle: prompt_handle) }
   let(:prompt_handle) { "favourite_number" }
   let(:base_params) {

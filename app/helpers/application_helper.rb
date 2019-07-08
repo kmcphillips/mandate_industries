@@ -1,9 +1,9 @@
 module ApplicationHelper
-  def caller_location(phone_call)
+  def from_location(phone_call)
     [
-      phone_call.caller_city.presence&.titleize,
-      phone_call.caller_province,
-      phone_call.caller_country,
+      phone_call.from_city.presence&.titleize,
+      phone_call.from_province,
+      phone_call.from_country,
     ].reject(&:blank?).join(", ")
   end
 

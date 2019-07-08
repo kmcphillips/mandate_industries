@@ -10,10 +10,10 @@ module Twilio
           sid: params["CallSid"],
           tree_name: tree.name,
           number: params["Called"].presence || params["To"].presence,
-          caller_number: params["Caller"] || params["From"].presence,
-          caller_city: params["CallerCity"] || params["FromCity"].presence,
-          caller_province: params["CallerState"] || params["FromState"].presence,
-          caller_country: params["CallerCountry"] || params["FromCountry"].presence,
+          from_number: params["Caller"].presence || params["From"].presence,
+          from_city: params["CallerCity"].presence || params["FromCity"].presence,
+          from_province: params["CallerState"].presence || params["FromState"].presence,
+          from_country: params["CallerCountry"].presence || params["FromCountry"].presence,
         )
         phone_call.save!
 

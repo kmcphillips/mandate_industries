@@ -51,10 +51,10 @@ RSpec.describe Twilio::Phone::CreateOperation, type: :operation do
       phone_call = PhoneCall.last
       expect(phone_call.sid).to eq(call_sid)
       expect(phone_call.number).to eq(to_number)
-      expect(phone_call.caller_number).to eq(from_number)
-      expect(phone_call.caller_city).to eq("OTTAWA")
-      expect(phone_call.caller_province).to eq("ON")
-      expect(phone_call.caller_country).to eq("CA")
+      expect(phone_call.from_number).to eq(from_number)
+      expect(phone_call.from_city).to eq("OTTAWA")
+      expect(phone_call.from_province).to eq("ON")
+      expect(phone_call.from_country).to eq("CA")
     end
 
     it "sends the SMS notifications" do

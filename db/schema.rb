@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_08_020738) do
+ActiveRecord::Schema.define(version: 2019_07_08_021800) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -35,10 +35,10 @@ ActiveRecord::Schema.define(version: 2019_07_08_020738) do
 
   create_table "phone_calls", force: :cascade do |t|
     t.string "number"
-    t.string "caller_number"
-    t.string "caller_city"
-    t.string "caller_province"
-    t.string "caller_country"
+    t.string "from_number"
+    t.string "from_city"
+    t.string "from_province"
+    t.string "from_country"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "sid"
