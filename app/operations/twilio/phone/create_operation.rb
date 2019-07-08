@@ -3,10 +3,12 @@ module Twilio
   module Phone
     class CreateOperation < ApplicationOperation
       input :params, accepts: Hash, type: :keyword, required: true
+      input :tree, accepts: Twilio::Phone::Tree, type: :keyword, required: true
 
       def execute
         phone_call = PhoneCall.new(
           sid: params["CallSid"],
+          tree_name: tree.name,
           number: params["Called"].presence || params["To"].presence,
           caller_number: params["Caller"] || params["From"].presence,
           caller_city: params["CallerCity"] || params["FromCity"].presence,

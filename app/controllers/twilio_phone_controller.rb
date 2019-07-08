@@ -7,7 +7,7 @@ class TwilioPhoneController < ApplicationController
   def greeting
     respond_to do |format|
       format.xml do
-        phone_call = Twilio::Phone::CreateOperation.call(params: params_hash)
+        phone_call = Twilio::Phone::CreateOperation.call(params: params_hash, tree: tree)
         render xml: Twilio::Phone::Twiml::GreetingOperation.call(phone_call_id: phone_call.id, tree: tree)
       end
     end
