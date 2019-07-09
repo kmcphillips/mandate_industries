@@ -4,8 +4,8 @@ require 'rails_helper'
 RSpec.describe TwilioPhoneController, type: :controller do
   include_examples "twilio phone API call"
 
-  let(:phone_call) { phone_call_response.phone_call }
-  let(:phone_call_response) { create(:response) } # Eugh, collision on local var :response with controller specs
+  let(:phone_call) { create(:phone_call, sid: call_sid) }
+  let(:phone_call_response) { create(:response, phone_call: phone_call) } # Eugh, collision on local var :response with controller specs
   let(:tree) { Twilio::Phone::Tree.for(:favourite_number) }
   let(:twiml) { "<Response>expected</Response>" }
   let(:hangup_twiml) {
@@ -27,7 +27,7 @@ RSpec.describe TwilioPhoneController, type: :controller do
       }
     }
 
-    it "creates the session and calls the operation" do
+    it "creates the call and calls the operation" do
       allow_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create)
       expect(Twilio::Phone::Twiml::GreetingOperation).to receive(:call).with(phone_call_id: phone_call.id + 1, tree: tree).and_return(twiml)
       post :greeting, format: :xml, params: params
@@ -41,27 +41,92 @@ RSpec.describe TwilioPhoneController, type: :controller do
     end
   end
 
+  describe "POST#prompt" do
+    let(:params) {
+      {
+        "AccountSid" => account_sid,
+        tree_name: :favourite_number,
+        response_id: phone_call_response.id.to_s,
+        "CallSid" => call_sid,
+        "Called" => from_number,
+      }
+    }
+
+    it "finds the call and calls the operation" do
+      expect(Twilio::Phone::Twiml::PromptOperation).to receive(:call).with(phone_call_id: phone_call.id, tree: tree, response_id: phone_call_response.id).and_return(twiml)
+      post :prompt, format: :xml, params: params
+      expect(response.body).to eq(twiml)
+    end
+
+    it "renders error without valid account" do
+      expect(Twilio::Phone::Twiml::PromptOperation).to_not receive(:call)
+      post :prompt, format: :xml, params: params.merge("AccountSid" => "invalid")
+      expect(response.body).to eq(hangup_twiml)
+    end
+  end
+
+  describe "POST#prompt_response" do
+    let(:controller_params) {
+      params.merge(
+        tree_name: :favourite_number,
+        response_id: phone_call_response.id.to_s,
+      )
+    }
+    let(:params) {
+      {
+        "AccountSid" => account_sid,
+        "CallSid" => call_sid,
+        "Called" => from_number,
+      }
+    }
+
+    it "finds the call and calls the operation" do
+      expect(Twilio::Phone::Twiml::PromptResponseOperation).to receive(:call).with(
+        phone_call_id: phone_call.id,
+        tree: tree,
+        response_id: phone_call_response.id,
+        params_hash: params,
+      ).and_return(twiml)
+      post :prompt_response, format: :xml, params: controller_params
+      expect(response.body).to eq(twiml)
+    end
+
+    it "renders error without valid account" do
+      expect(Twilio::Phone::Twiml::PromptResponseOperation).to_not receive(:call)
+      post :prompt_response, format: :xml, params: controller_params.merge("AccountSid" => "invalid")
+      expect(response.body).to eq(hangup_twiml)
+    end
+  end
+
+  describe "POST#timeout" do
+    let(:params) {
+      {
+        "AccountSid" => account_sid,
+        tree_name: :favourite_number,
+        response_id: phone_call_response.id.to_s,
+        "CallSid" => call_sid,
+        "Called" => from_number,
+      }
+    }
+
+    it "finds the call and calls the operation" do
+      expect(Twilio::Phone::Twiml::TimeoutOperation).to receive(:call).with(phone_call_id: phone_call.id, tree: tree, response_id: phone_call_response.id).and_return(twiml)
+      post :timeout, format: :xml, params: params
+      expect(response.body).to eq(twiml)
+    end
+
+    it "renders error without valid account" do
+      expect(Twilio::Phone::Twiml::TimeoutOperation).to_not receive(:call)
+      post :timeout, format: :xml, params: params.merge("AccountSid" => "invalid")
+      expect(response.body).to eq(hangup_twiml)
+    end
+  end
+
   describe "POST#receive_response_recording" do
     it "should be tested"
   end
 
   describe "POST#transcribe" do
-    it "should be tested"
-  end
-
-  describe "POST#greeting" do
-    it "should be tested"
-  end
-
-  describe "POST#prompt" do
-    it "should be tested"
-  end
-
-  describe "POST#prompt_response" do
-    it "should be tested"
-  end
-
-  describe "POST#timeout" do
     it "should be tested"
   end
 end
