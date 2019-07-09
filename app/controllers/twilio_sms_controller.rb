@@ -8,7 +8,7 @@ class TwilioSMSController < ApplicationController
     respond_to do |format|
       format.xml do
         if session[:sms_conversation_id].present?
-          conversation Twilio::SMS::FindOperation.call(sms_conversation_id: session[:sms_conversation_id])
+          conversation = Twilio::SMS::FindOperation.call(sms_conversation_id: session[:sms_conversation_id])
         else
           conversation = Twilio::SMS::CreateOperation.call(params: params_hash)
           session[:sms_conversation_id] = conversation.id
@@ -35,7 +35,7 @@ class TwilioSMSController < ApplicationController
     if params["AccountSid"] != Rails.application.credentials.twilio![:account_sid]
       respond_to do |format|
         format.xml do
-          render xml: Twilio::Twilio::SMS::Twiml::ErrorOperation.call()
+          render xml: Twilio::SMS::Twiml::ErrorOperation.call()
         end
       end
     end
