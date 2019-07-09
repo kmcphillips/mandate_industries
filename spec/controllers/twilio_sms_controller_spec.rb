@@ -42,6 +42,17 @@ RSpec.describe TwilioSMSController, type: :controller do
   end
 
   describe "POST#status" do
-    it "should be tested"
+    let(:params) {
+      {
+        "AccountSid" => account_sid,
+        "Status" => "wild",
+      }
+    }
+
+    it "updates the status" do
+      expect(Twilio::SMS::UpdateMessageOperation).to receive(:call).with(message_id: message.id, params: params)
+      post :status, format: :xml, params: params.merge(message_id: message.id.to_s)
+      expect(response).to have_http_status(:ok)
+    end
   end
 end

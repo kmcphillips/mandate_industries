@@ -42,6 +42,6 @@ class TwilioSMSController < ApplicationController
   end
 
   def params_hash
-    params.permit!.to_h.except("controller", "action", "format", "response_id", "tree_name")
+    params.permit!.to_h.except("controller", "action", "format", "message_id", "tree_name")
   end
 end
