@@ -5,11 +5,11 @@ module Twilio
       class PromptResponseOperation < Twilio::Phone::BaseOperation
         input :tree, accepts: Twilio::Phone::Tree, type: :keyword, required: true
         input :response_id, accepts: Integer, type: :keyword, required: true
-        input :params_hash, accepts: Hash, type: :keyword, required: true
+        input :params, accepts: Hash, type: :keyword, required: true
 
         def execute
           response = phone_call.responses.find(response_id)
-          Twilio::Phone::UpdateResponseOperation.call(params: params_hash, response_id: response.id, phone_call_id: phone_call.id)
+          Twilio::Phone::UpdateResponseOperation.call(params: params, response_id: response.id, phone_call_id: phone_call.id)
           response.reload
 
           prompt = tree.prompts[response.prompt_handle]

@@ -6,7 +6,7 @@ RSpec.describe Twilio::Phone::Twiml::PromptResponseOperation, type: :operation d
     let(:tree) { Twilio::Phone::Tree.for(:favourite_number) }
     let(:response) { create(:response) }
     let(:phone_call) { response.phone_call }
-    let(:params_hash) { { "Digits" => "3" } }
+    let(:params) { { "Digits" => "3" } }
 
     it "outputs twiml" do
       expected = <<~EXPECTED
@@ -16,7 +16,7 @@ RSpec.describe Twilio::Phone::Twiml::PromptResponseOperation, type: :operation d
         <Redirect>/twilio/phone/favourite_number/prompt/#{response.id + 1}.xml</Redirect>
         </Response>
       EXPECTED
-      expect(described_class.call(phone_call_id: phone_call.id, response_id: response.id, params_hash: params_hash, tree: tree)).to eq(expected)
+      expect(described_class.call(phone_call_id: phone_call.id, response_id: response.id, params: params, tree: tree)).to eq(expected)
       expect(response.reload.digits).to eq("3")
     end
   end

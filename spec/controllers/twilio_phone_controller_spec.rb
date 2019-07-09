@@ -85,7 +85,7 @@ RSpec.describe TwilioPhoneController, type: :controller do
         phone_call_id: phone_call.id,
         tree: tree,
         response_id: phone_call_response.id,
-        params_hash: params,
+        params: params,
       ).and_return(twiml)
       post :prompt_response, format: :xml, params: controller_params
       expect(response.body).to eq(twiml)
@@ -123,10 +123,56 @@ RSpec.describe TwilioPhoneController, type: :controller do
   end
 
   describe "POST#receive_response_recording" do
-    it "should be tested"
+    let(:controller_params) {
+      params.merge(
+        response_id: phone_call_response.id.to_s,
+      )
+    }
+    let(:params) {
+      {
+        "AccountSid" => account_sid,
+        "CallSid" => call_sid,
+        "Called" => from_number,
+      }
+    }
+
+    it "finds the call and calls the operation" do
+      expect(Twilio::Phone::ReceiveRecordingOperation).to receive(:call).with(phone_call_id: phone_call.id, response_id: phone_call_response.id, params: params)
+      post :receive_response_recording, format: :xml, params: controller_params
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "renders error without valid account" do
+      expect(Twilio::Phone::ReceiveRecordingOperation).to_not receive(:call)
+      post :receive_response_recording, format: :xml, params: controller_params.merge("AccountSid" => "invalid")
+      expect(response).to have_http_status(:ok)
+    end
   end
 
   describe "POST#transcribe" do
-    it "should be tested"
+    let(:controller_params) {
+      params.merge(
+        response_id: phone_call_response.id.to_s,
+      )
+    }
+    let(:params) {
+      {
+        "AccountSid" => account_sid,
+        "CallSid" => call_sid,
+        "Called" => from_number,
+      }
+    }
+
+    it "finds the call and calls the operation" do
+      expect(Twilio::Phone::UpdateResponseOperation).to receive(:call).with(phone_call_id: phone_call.id, response_id: phone_call_response.id, params: params)
+      post :transcribe, format: :xml, params: controller_params
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "renders error without valid account" do
+      expect(Twilio::Phone::UpdateResponseOperation).to_not receive(:call)
+      post :transcribe, format: :xml, params: controller_params.merge("AccountSid" => "invalid")
+      expect(response).to have_http_status(:ok)
+    end
   end
 end
