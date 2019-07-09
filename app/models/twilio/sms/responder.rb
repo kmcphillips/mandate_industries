@@ -17,8 +17,8 @@ module Twilio
         body = message.body || ""
 
         case matcher
-        when String
-          body.downcase.include?(matcher.downcase)
+        when String, Numeric, Symbol
+          body.downcase.include?(matcher.to_s.downcase)
         when Regexp
           matcher.match?(body)
         else

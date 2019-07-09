@@ -20,7 +20,7 @@ RSpec.describe Twilio::SMS::Responder, type: :model do
   end
 
   describe "#matches?" do
-    let(:message) { create(:message, :received, body: "oh, hello")}
+    let(:message) { create(:message, :received, body: "oh, hello") }
 
     context "String" do
       it "matches ignoring case" do
@@ -43,6 +43,18 @@ RSpec.describe Twilio::SMS::Responder, type: :model do
 
       it "does not match" do
         expect(responder.matches?(/hi/)).to be(false)
+      end
+    end
+
+    context "coersed type" do
+      let(:message) { create(:message, :received, body: "test_123")}
+
+      it "matches a symbol" do
+        expect(responder.matches?(:test)).to be(true)
+      end
+
+      it "matches an int" do
+        expect(responder.matches?(123)).to be(true)
       end
     end
 
