@@ -68,7 +68,7 @@ class TwilioPhoneController < ApplicationController
     if params["AccountSid"] != Rails.application.credentials.twilio![:account_sid]
       respond_to do |format|
         format.xml do
-          render xml: Twilio::Twilio::Phone::Twiml::ErrorOperation.call()
+          render xml: Twilio::Phone::Twiml::ErrorOperation.call()
         end
       end
     end
