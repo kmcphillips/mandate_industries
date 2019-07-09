@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_08_022631) do
+ActiveRecord::Schema.define(version: 2019_07_09_002552) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -82,7 +82,6 @@ ActiveRecord::Schema.define(version: 2019_07_08_022631) do
 
   create_table "sms_conversations", force: :cascade do |t|
     t.string "number"
-    t.string "tree_name"
     t.string "from_number"
     t.string "from_city"
     t.string "from_province"

@@ -6,5 +6,11 @@ FactoryBot.define do
     direction { "sent" }
 
     sms_conversation
+
+    trait :received do
+      direction { "received" }
+      status { nil }
+      sid { nil }
+    end
   end
 end

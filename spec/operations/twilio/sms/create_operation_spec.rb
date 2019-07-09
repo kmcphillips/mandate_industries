@@ -33,28 +33,25 @@ RSpec.describe Twilio::SMS::CreateOperation, type: :operation do
       allow_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create)
     end
 
-    let(:tree) { Twilio::SMS::Tree.new("example_tree") }
-
     it "creates the SMSConversation" do
-      conversation = described_class.call(params: params, tree: tree)
+      conversation = described_class.call(params: params)
       expect(conversation).to be_a(SMSConversation)
     end
 
     it "creates a call record" do
-      expect{ described_class.call(params: params, tree: tree) }.to change{ SMSConversation.count }.by(1)
-      phone_call = SMSConversation.last
-      expect(phone_call.tree_name).to eq("example_tree")
-      expect(phone_call.number).to eq(to_number)
-      expect(phone_call.from_number).to eq(from_number)
-      expect(phone_call.from_city).to eq("OTTAWA")
-      expect(phone_call.from_province).to eq("ON")
-      expect(phone_call.from_country).to eq("CA")
+      expect{ described_class.call(params: params) }.to change{ SMSConversation.count }.by(1)
+      conversation = SMSConversation.last
+      expect(conversation.number).to eq(to_number)
+      expect(conversation.from_number).to eq(from_number)
+      expect(conversation.from_city).to eq("OTTAWA")
+      expect(conversation.from_province).to eq("ON")
+      expect(conversation.from_country).to eq("CA")
     end
 
     it "sends the SMS notifications" do
       expect_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create).with(hash_including(to: '+12222222222'))
       expect_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create).with(hash_including(to: '+13333333333'))
-      described_class.call(params: params, tree: tree)
+      described_class.call(params: params)
     end
   end
 end

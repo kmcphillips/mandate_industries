@@ -10,11 +10,11 @@ class TwilioSMSController < ApplicationController
         if session[:sms_conversation_id].present?
           conversation Twilio::SMS::FindOperation.call(sms_conversation_id: session[:sms_conversation_id])
         else
-          conversation = Twilio::SMS::CreateOperation.call(params: params_hash, tree: tree)
+          conversation = Twilio::SMS::CreateOperation.call(params: params_hash)
           session[:sms_conversation_id] = conversation.id
         end
 
-        render xml: Twilio::SMS::Twiml::MessageOperation.call(sms_conversation_id: conversation.id, tree: tree, params: params_hash)
+        render xml: Twilio::SMS::Twiml::MessageOperation.call(sms_conversation_id: conversation.id, params: params_hash)
       end
     end
   end
@@ -39,10 +39,6 @@ class TwilioSMSController < ApplicationController
         end
       end
     end
-  end
-
-  def tree
-    @tree ||= Twilio::SMS::Tree.for(params[:tree_name])
   end
 
   def params_hash

@@ -2,12 +2,10 @@
 module Twilio
   module SMS
     class CreateOperation < ApplicationOperation
-      input :tree, accepts: Twilio::SMS::Tree, type: :keyword, required: true
       input :params, accepts: Hash, type: :keyword, required: true
 
       def execute
         conversation = SMSConversation.new(
-          tree_name: tree.name,
           number: params["Called"].presence || params["To"].presence,
           from_number: params["From"].presence,
           from_city: params["FromCity"].presence,

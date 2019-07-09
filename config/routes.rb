@@ -9,5 +9,5 @@ Rails.application.routes.draw do
   match "twilio/phone/:tree_name/timeout/:response_id", to: "twilio_phone#timeout", via: [:get, :post]
 
   match "twilio/sms/status/:message_id", to: "twilio_sms#status", via: [:get, :post]
-  match "twilio/sms/:tree_name/message", to: "twilio_sms#message", via: [:get, :post]
+  match "twilio/sms/message", to: "twilio_sms#message", via: [:get, :post]
 end

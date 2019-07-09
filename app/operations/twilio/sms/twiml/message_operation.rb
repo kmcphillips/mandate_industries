@@ -3,18 +3,16 @@ module Twilio
   module SMS
     module Twiml
       class MessageOperation < Twilio::SMS::BaseOperation
-        input :tree, accepts: Twilio::SMS::Tree, type: :keyword, required: true
         input :params, accepts: Hash, type: :keyword, required: true
 
         def execute
           received_message = conversation.messages.create!(
             direction: "received",
-            body: params_hash["Body"],
-            sid: params_hash["SmsSid"].presence || params_hash["MessageSid"].presence
+            body: params["Body"],
+            sid: params["SmsSid"].presence || params["MessageSid"].presence
           )
 
-          # TODO navigate tree
-          body = "TODO"
+          body = Twilio::SMS::Responder.new(received_message).reply
 
           message = conversation.messages.create!(
             direction: "sent",
