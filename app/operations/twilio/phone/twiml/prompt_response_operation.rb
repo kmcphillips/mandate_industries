@@ -9,8 +9,7 @@ module Twilio
 
         def execute
           response = phone_call.responses.find(response_id)
-          Twilio::Phone::UpdateResponseOperation.call(params: params, response_id: response.id, phone_call_id: phone_call.id)
-          response.reload
+          response = Twilio::Phone::UpdateResponseOperation.call(params: params, response_id: response.id, phone_call_id: phone_call.id)
 
           prompt = tree.prompts[response.prompt_handle]
 

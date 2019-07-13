@@ -7,7 +7,10 @@ module Twilio
         input :after, accepts: Twilio::Phone::Tree::After, type: :keyword, required: true
 
         def execute
-          next_response = phone_call.responses.create!(prompt_handle: after.prompt) unless after.hangup?
+          unless after.hangup?
+            next_response = phone_call.responses.build(prompt_handle: after.prompt)
+            next_response.save! && observer(next_response).notify
+          end
 
           twiml_response = Twilio::TwiML::VoiceResponse.new do |twiml|
             if after.message.present?

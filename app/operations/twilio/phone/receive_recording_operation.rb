@@ -16,7 +16,7 @@ module Twilio
         recording.save!
 
         response.recording = recording
-        response.save!
+        response.save! && observer(response).notify
 
         Twilio::AttachRecordingJob.perform_later(recording_id: recording.id)
 

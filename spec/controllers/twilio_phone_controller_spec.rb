@@ -28,7 +28,7 @@ RSpec.describe TwilioPhoneController, type: :controller do
     }
 
     it "creates the call and calls the operation" do
-      allow_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create)
+      expect(TwilioClient).to receive(:send_notification)
       expect(Twilio::Phone::Twiml::GreetingOperation).to receive(:call).with(phone_call_id: phone_call.id + 1, tree: tree).and_return(twiml)
       post :greeting, format: :xml, params: params
       expect(response.body).to eq(twiml)

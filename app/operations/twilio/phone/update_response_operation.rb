@@ -17,9 +17,10 @@ module Twilio
         end
 
         if response.changed?
-          response.save!
-          PhoneCallChannel.broadcast_recent
+          response.save! && observer(response).notify
         end
+
+        response
       end
     end
   end

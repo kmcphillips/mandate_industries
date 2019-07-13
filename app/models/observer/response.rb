@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 module Observer
-  class PhoneCall < Base
+  class Response < Base
     def created
       PhoneCallChannel.broadcast_recent
-      TwilioClient.send_notification("A new call has come into Mandate Industries. https://mandate.kev.cool/")
     end
 
     def updated

@@ -16,7 +16,7 @@ RSpec.describe TwilioSMSController, type: :controller do
     }
 
     it "creates the session and calls the operation" do
-      allow_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create)
+      expect(TwilioClient).to receive(:send_notification)
       expect(Twilio::SMS::Twiml::MessageOperation).to receive(:call).with(sms_conversation_id: conversation.id + 1, params: params).and_return(twiml)
       post :message, format: :xml, params: params, session: {}
       expect(response.body).to eq(twiml)

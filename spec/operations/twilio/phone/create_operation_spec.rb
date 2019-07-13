@@ -36,7 +36,7 @@ RSpec.describe Twilio::Phone::CreateOperation, type: :operation do
 
   describe "#execute" do
     before do
-      allow_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create)
+      allow(TwilioClient).to receive(:send_notification)
     end
 
     let(:tree) { Twilio::Phone::Tree.new("example_tree") }
@@ -58,8 +58,7 @@ RSpec.describe Twilio::Phone::CreateOperation, type: :operation do
     end
 
     it "sends the SMS notifications" do
-      expect_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create).with(hash_including(to: '+12222222222'))
-      expect_any_instance_of(Twilio::REST::Api::V2010::AccountContext::MessageList).to receive(:create).with(hash_including(to: '+13333333333'))
+      expect(TwilioClient).to receive(:send_notification)
       described_class.call(params: params, tree: tree)
     end
   end

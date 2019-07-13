@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Observer::PhoneCall, type: :model do
+RSpec.describe Observer::Recording, type: :model do
   subject(:observer) { described_class.new(record) }
 
   let(:record) { create(:phone_call) }
@@ -9,7 +9,6 @@ RSpec.describe Observer::PhoneCall, type: :model do
   describe "#created" do
     it "sends notifications" do
       expect(PhoneCallChannel).to receive(:broadcast_recent)
-      expect(TwilioClient).to receive(:send_notification)
       observer.created
     end
   end

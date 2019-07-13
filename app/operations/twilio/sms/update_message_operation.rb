@@ -13,8 +13,7 @@ module Twilio
         end
 
         if message.changed?
-          message.save!
-          PhoneCallChannel.broadcast_recent # TODO
+          message.save! && observer(message).notify
         end
       end
     end

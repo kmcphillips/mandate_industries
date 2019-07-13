@@ -9,9 +9,7 @@ module Twilio
 
         if !recording.audio.attached?
           recording.audio.attach(io: StringIO.new(Faraday.get(recording.url).body), filename: "mandate_recording.wav", content_type: "audio/wav")
-          recording.save!
-
-          PhoneCallChannel.broadcast_recent
+          recording.save! && observer(recording).notify
         end
       end
     end
