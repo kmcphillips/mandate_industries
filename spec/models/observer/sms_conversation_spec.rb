@@ -4,7 +4,7 @@ require 'rails_helper'
 RSpec.describe Observer::SMSConversation, type: :model do
   subject(:observer) { described_class.new(record) }
 
-  let(:record) { create(:phone_call) }
+  let(:record) { create(:sms_conversation) }
 
   describe "#created" do
     it "sends notifications" do

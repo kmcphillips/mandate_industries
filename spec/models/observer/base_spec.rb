@@ -13,7 +13,12 @@ RSpec.describe Observer::Base, type: :model do
   end
 
   describe "#notify" do
-    it "delegates to updated" do
+    it "delegates to #created" do
+      expect(observer).to receive(:created)
+      observer.notify
+    end
+
+    it "delegates to #updated" do
       record.reload
       record.from_city = "changed value"
       record.save!
@@ -22,14 +27,24 @@ RSpec.describe Observer::Base, type: :model do
       observer.notify
     end
 
-    it "delegates to created" do
-      expect(observer).to receive(:created)
+    it "delegates to #updated on no changes" do
+      record.reload
+      expect(observer).to receive(:updated)
       observer.notify
     end
 
-    it "raises on neither" do
-      record.reload
-      expect { observer.notify }.to raise_error(ArgumentError)
+    it "delegates to #destroyed on destroyed instance" do
+      record.destroy
+      expect(observer).to receive(:destroyed)
+      observer.notify
+    end
+
+    context "with unsaved" do
+      let(:record) { build(:phone_call) }
+
+      it "raises" do
+        expect { observer.notify }.to raise_error(Observer::Error)
+      end
     end
   end
 end

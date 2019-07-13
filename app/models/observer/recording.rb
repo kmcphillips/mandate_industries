@@ -7,6 +7,10 @@ module Observer
 
     def updated
       PhoneCallChannel.broadcast_recent
+
+      if record.audio.attached?
+        # TODO
+      end
     end
   end
 end

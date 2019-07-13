@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 module Observer
+  class Error < StandardError ; end
+
   class << self
     def for(record)
       klass = Observer::Null

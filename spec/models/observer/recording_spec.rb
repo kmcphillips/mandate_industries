@@ -4,7 +4,7 @@ require 'rails_helper'
 RSpec.describe Observer::Recording, type: :model do
   subject(:observer) { described_class.new(record) }
 
-  let(:record) { create(:phone_call) }
+  let(:record) { create(:recording) }
 
   describe "#created" do
     it "sends notifications" do
@@ -18,5 +18,7 @@ RSpec.describe Observer::Recording, type: :model do
       expect(PhoneCallChannel).to receive(:broadcast_recent)
       observer.updated
     end
+
+    it "handles a new processed attachment  "
   end
 end
