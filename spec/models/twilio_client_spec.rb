@@ -44,7 +44,7 @@ RSpec.describe TwilioClient, type: :model do
     it "starts a new phone call to the tree" do
       expect_any_instance_of(Twilio::REST::Api::V2010::AccountContext::CallList)
         .to receive(:create)
-        .with(from: from_number, to: to_number, url: "https://mandate_test.kev.cool/twilio/phone/favourite_number/greeting")
+        .with(from: from_number, to: to_number, url: "https://mandate_test.kev.cool/twilio/phone/favourite_number/greeting.xml")
         .and_return(response)
       expect(described_class.start_call(tree: tree, to: to_number)).to eq(sid)
     end

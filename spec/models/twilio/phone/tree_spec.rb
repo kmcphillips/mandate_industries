@@ -23,7 +23,7 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
 
   describe "#greeting_url" do
     it "should create from the tree and the env" do
-      expect(tree.greeting_url).to eq("https://mandate_test.kev.cool/twilio/phone/example/greeting")
+      expect(tree.greeting_url).to eq("https://mandate_test.kev.cool/twilio/phone/example/greeting.xml")
     end
   end
 

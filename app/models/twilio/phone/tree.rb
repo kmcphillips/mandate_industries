@@ -38,7 +38,7 @@ module Twilio
       def greeting_url
         Rails.application.routes.url_helpers.twilio_phone_greeting_url(
           Rails.configuration.action_controller.default_url_options
-            .merge(tree_name: name)
+            .merge(tree_name: name, format: :xml)
         )
       end
 
