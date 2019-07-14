@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 class ExampleJob < ApplicationJob
   queue_as :default
 
-  def perform(*args)
+  def perform
     twilio_client ||= Twilio::REST::Client.new(
       Rails.application.credentials.twilio![:account_sid],
       Rails.application.credentials.twilio![:auth_token],

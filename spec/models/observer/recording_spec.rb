@@ -19,6 +19,6 @@ RSpec.describe Observer::Recording, type: :model do
       observer.updated
     end
 
-    it "handles a new processed attachment  "
+    it "handles a new processed attachment"
   end
 end

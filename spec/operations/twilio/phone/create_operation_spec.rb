@@ -47,7 +47,7 @@ RSpec.describe Twilio::Phone::CreateOperation, type: :operation do
     end
 
     it "creates a call record" do
-      expect{ described_class.call(params: params, tree: tree) }.to change{ PhoneCall.count }.by(1)
+      expect{ described_class.call(params: params.except("direction"), tree: tree) }.to change{ PhoneCall.count }.by(1)
       phone_call = PhoneCall.last
       expect(phone_call.sid).to eq(call_sid)
       expect(phone_call.number).to eq(to_number)
@@ -55,6 +55,7 @@ RSpec.describe Twilio::Phone::CreateOperation, type: :operation do
       expect(phone_call.from_city).to eq("OTTAWA")
       expect(phone_call.from_province).to eq("ON")
       expect(phone_call.from_country).to eq("CA")
+      expect(phone_call.direction).to eq("sent")
     end
 
     it "sends the SMS notifications" do
