@@ -15,13 +15,6 @@ module Twilio
         }
 
         phone_call = Twilio::Phone::CreateOperation.call(params: params, tree: tree)
-
-        # TODO: This is copied from GreetingOperation and AfterOperation, which is not good. Abstraction missing or incorrect.
-        after = tree.greeting
-        after = Twilio::Phone::Tree::After.new(after.proc.call(nil)) if after.proc
-        next_response = phone_call.responses.build(prompt_handle: after.prompt)
-        next_response.save! && observer(next_response).notify
-
         phone_call
       end
     end

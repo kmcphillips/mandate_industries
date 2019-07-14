@@ -8,7 +8,7 @@ class PhoneCallChannel < ApplicationCable::Channel
 
   class << self
     def broadcast_recent
-      phone_calls = PhoneCall.recent
+      phone_calls = PhoneCall.received.recent
       html = HomeController.render(partial: "home/phone_calls", locals: { phone_calls: phone_calls })
       PhoneCallChannel.broadcast_to("recent", html)
     end
