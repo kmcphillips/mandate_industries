@@ -17,7 +17,7 @@ RSpec.describe TwilioPhoneController, type: :controller do
     EXPECTED
   }
 
-  describe "POST#greeting" do
+  describe "POST#inbound" do
     let(:params) {
       {
         "AccountSid" => account_sid,
@@ -30,13 +30,38 @@ RSpec.describe TwilioPhoneController, type: :controller do
     it "creates the call and calls the operation" do
       expect(TwilioClient).to receive(:send_notification)
       expect(Twilio::Phone::Twiml::GreetingOperation).to receive(:call).with(phone_call_id: phone_call.id + 1, tree: tree).and_return(twiml)
-      post :greeting, format: :xml, params: params
+      post :inbound, format: :xml, params: params
       expect(response.body).to eq(twiml)
     end
 
     it "renders error without valid account" do
       expect(Twilio::Phone::CreateOperation).to_not receive(:call)
-      post :greeting, format: :xml, params: params.merge("AccountSid" => "invalid")
+      post :inbound, format: :xml, params: params.merge("AccountSid" => "invalid")
+      expect(response.body).to eq(hangup_twiml)
+    end
+  end
+
+  describe "POST#outbound" do
+    let(:phone_call) { create(:phone_call, :sent, sid: call_sid) }
+    let(:params) {
+      {
+        "AccountSid" => account_sid,
+        tree_name: :favourite_number,
+        "CallSid" => call_sid,
+        "Called" => from_number,
+      }
+    }
+
+    it "creates the call and calls the operation" do
+      expect(TwilioClient).to_not receive(:send_notification)
+      expect(Twilio::Phone::Twiml::GreetingOperation).to receive(:call).with(phone_call_id: phone_call.id, tree: tree).and_return(twiml)
+      post :outbound, format: :xml, params: params
+      expect(response.body).to eq(twiml)
+    end
+
+    it "renders error without valid account" do
+      expect(Twilio::Phone::CreateOperation).to_not receive(:call)
+      post :outbound, format: :xml, params: params.merge("AccountSid" => "invalid")
       expect(response.body).to eq(hangup_twiml)
     end
   end

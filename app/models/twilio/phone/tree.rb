@@ -35,8 +35,8 @@ module Twilio
       end
 
       # TODO: Should probably use named routes for everything here
-      def greeting_url
-        Rails.application.routes.url_helpers.twilio_phone_greeting_url(
+      def outbound_url
+        Rails.application.routes.url_helpers.twilio_phone_outbound_url(
           Rails.configuration.action_controller.default_url_options
             .merge(tree_name: name, format: :xml)
         )

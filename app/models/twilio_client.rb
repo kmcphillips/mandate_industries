@@ -26,7 +26,7 @@ module TwilioClient
       client.calls.create(
         from: Rails.application.credentials.twilio![:phone_number],
         to: to,
-        url: tree.greeting_url,
+        url: tree.outbound_url,
       ).sid
     end
   end
