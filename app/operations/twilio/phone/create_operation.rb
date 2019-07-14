@@ -17,7 +17,6 @@ module Twilio
           from_country: params["CallerCountry"].presence || params["FromCountry"].presence,
         )
         phone_call.save! && observer(phone_call).notify
-
         phone_call
       end
     end

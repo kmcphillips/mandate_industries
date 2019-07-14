@@ -38,7 +38,7 @@ RSpec.describe TwilioClient, type: :model do
     end
   end
 
-  describe ".make_call" do
+  describe ".start_call" do
     let(:tree) { Twilio::Phone::Tree.for(:favourite_number) }
 
     it "starts a new phone call to the tree" do
@@ -46,7 +46,7 @@ RSpec.describe TwilioClient, type: :model do
         .to receive(:create)
         .with(from: from_number, to: to_number, url: "https://mandate_test.kev.cool/twilio/phone/favourite_number/greeting")
         .and_return(response)
-      expect(described_class.make_call(tree: tree, to: to_number)).to eq(sid)
+      expect(described_class.start_call(tree: tree, to: to_number)).to eq(sid)
     end
   end
 end

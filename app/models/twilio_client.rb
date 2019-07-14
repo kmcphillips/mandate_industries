@@ -22,7 +22,7 @@ module TwilioClient
       ).sid
     end
 
-    def make_call(tree:, to:)
+    def start_call(tree:, to:)
       client.calls.create(
         from: Rails.application.credentials.twilio![:phone_number],
         to: to,
