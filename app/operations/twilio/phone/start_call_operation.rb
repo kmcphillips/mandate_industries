@@ -10,8 +10,8 @@ module Twilio
         params = {
           "CallSid" => sid,
           "direction" => "sent",
-          "To" => to,
-          "From" => Rails.application.credentials.twilio![:phone_number],
+          "To" => Rails.application.credentials.twilio![:phone_number],
+          "From" => to,
         }
 
         phone_call = Twilio::Phone::CreateOperation.call(params: params, tree: tree)
