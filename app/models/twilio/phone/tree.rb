@@ -34,6 +34,14 @@ module Twilio
         @config[:timeout_message] = nil
       end
 
+      # TODO: Should probably use named routes for everything here
+      def greeting_url
+        Rails.application.routes.url_helpers.twilio_phone_greeting_url(
+          Rails.configuration.action_controller.default_url_options
+            .merge(tree_name: name)
+        )
+      end
+
       class Prompt
         attr_reader :name, :message, :gather, :after
 

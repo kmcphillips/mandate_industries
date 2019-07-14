@@ -9,13 +9,25 @@ module TwilioClient
     end
 
     def send_notification(message)
-      Rails.application.credentials.notification_numbers.each do |number|
-        client.messages.create(
-          from: Rails.application.credentials.twilio![:phone_number],
-          body: message,
-          to: number,
-        )
+      Rails.application.credentials.notification_numbers.map do |to|
+        send_message(message: message, to: to)
       end
+    end
+
+    def send_message(message:, to:)
+      client.messages.create(
+        from: Rails.application.credentials.twilio![:phone_number],
+        to: to,
+        body: message,
+      ).sid
+    end
+
+    def make_call(tree:, to:)
+      client.calls.create(
+        from: Rails.application.credentials.twilio![:phone_number],
+        to: to,
+        url: tree.greeting_url,
+      ).sid
     end
   end
 end

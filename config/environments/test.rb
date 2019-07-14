@@ -30,7 +30,7 @@ Rails.application.configure do
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
 
-  config.action_controller.default_url_options = { host: 'mandate.example.com', protocol: 'https' }
+  config.action_controller.default_url_options = { host: 'mandate_test.kev.cool', protocol: 'https' }
 
   # Store uploaded files on the local file system in a temporary directory.
   config.active_storage.service = :test

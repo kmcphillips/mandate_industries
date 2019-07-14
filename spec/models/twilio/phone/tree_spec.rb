@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe Twilio::Phone::Tree, type: :model do
-  let(:tree) { double }
+  subject(:tree) { described_class.new(:example) }
 
   describe ".for" do
     it "loads the class by name" do
@@ -16,10 +16,14 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
   end
 
   describe "#initialize" do
-    let(:tree) { described_class.new(:example) }
-
     it "sets a config with defaults" do
       expect(tree.config).to eq({ "voice" => "male", "timeout_message" => nil })
+    end
+  end
+
+  describe "#greeting_url" do
+    it "should create from the tree and the env" do
+      expect(tree.greeting_url).to eq("https://mandate_test.kev.cool/twilio/phone/example/greeting")
     end
   end
 
