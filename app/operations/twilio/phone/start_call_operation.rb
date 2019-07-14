@@ -14,7 +14,15 @@ module Twilio
           "From" => Rails.application.credentials.twilio![:phone_number],
         }
 
-        Twilio::Phone::CreateOperation.call(params: params, tree: tree)
+        phone_call = Twilio::Phone::CreateOperation.call(params: params, tree: tree)
+
+        # TODO: This is copied from GreetingOperation and AfterOperation
+        after = tree.greeting
+        after = Twilio::Phone::Tree::After.new(after.proc.call(nil)) if after.proc
+        next_response = phone_call.responses.build(prompt_handle: after.prompt)
+        next_response.save! && observer(next_response).notify
+
+        phone_call
       end
     end
   end
