@@ -4,7 +4,11 @@ require 'rails_helper'
 RSpec.describe Twilio::Phone::StartCallOperation, type: :operation do
   include_examples "twilio phone API call"
 
-  let(:tree) { Twilio::Phone::Tree.new("example_tree") }
+  let(:tree) do
+    val = Twilio::Phone::Tree.new("example_tree")
+    val.greeting = Twilio::Phone::Tree::After.new(:first_message)
+    val
+  end
   let(:called_number) { "+14445556666" }
 
   describe "#execute" do
@@ -27,8 +31,8 @@ RSpec.describe Twilio::Phone::StartCallOperation, type: :operation do
       expect(phone_call.direction).to eq("sent")
     end
 
-    it "sends the SMS notifications" do
-      expect(TwilioClient).to receive(:send_notification)
+    it "does not send SMS notifications" do
+      expect(TwilioClient).to_not receive(:send_notification)
       described_class.call(to: called_number, tree: tree)
     end
   end

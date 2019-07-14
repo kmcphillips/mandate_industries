@@ -8,7 +8,7 @@ module Twilio
       def execute
         phone_call = PhoneCall.new(
           sid: params["CallSid"],
-          direction: params["direction"].presence || "sent",
+          direction: params["direction"].presence || "received",
           tree_name: tree.name,
           number: params["Called"].presence || params["To"].presence,
           from_number: params["Caller"].presence || params["From"].presence,
