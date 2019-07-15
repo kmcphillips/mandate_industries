@@ -8,6 +8,7 @@ module Twilio
       TREES = {
         favourite_number: "Twilio::Phone::FavouriteNumberTree",
         storytime: "Twilio::Phone::StorytimeTree",
+        tone_rating: "Twilio::Phone::ToneRatingTree",
       }.freeze
 
       class << self
@@ -43,22 +44,26 @@ module Twilio
       end
 
       class Prompt
-        attr_reader :name, :message, :gather, :after
+        attr_reader :name, :message, :play, :gather, :after
 
-        def initialize(name:, message:, gather:, after:)
+        def initialize(name:, message:, gather:, after:, play:)
           @name = name&.to_sym
           raise Twilio::InvalidTreeError, "prompt name cannot be blank" if @name.blank?
 
           @message = message.presence
-          raise Twilio::InvalidTreeError, "message must be a string or proc" if @message && !(@message.is_a?(String) || @message.is_a?(Proc))
+          @play = play.presence
 
-          @gather = Twilio::Phone::Tree::Gather.new(gather)
+          raise Twilio::InvalidTreeError, "message must be a string or proc" if @message && !(@message.is_a?(String) || @message.is_a?(Proc))
+          raise Twilio::InvalidTreeError, "play must be a string or proc" if @play && !(@play.is_a?(String) || @play.is_a?(Proc))
+          raise Twilio::InvalidTreeError, "cannot have both play: and message:" if @message && @play
+
+          @gather = Twilio::Phone::Tree::Gather.new(gather) if gather.present?
           @after = Twilio::Phone::Tree::After.new(after)
         end
       end
 
       class After
-        attr_reader :message, :prompt, :proc
+        attr_reader :message, :play, :prompt, :proc
 
         def initialize(args)
           case args
@@ -72,7 +77,11 @@ module Twilio
             @hangup = !!args[:hangup]
 
             @message = args[:message]
+            @play = args[:play]
+
             raise Twilio::InvalidTreeError, "message must be a string or proc" if @message && !(@message.is_a?(String) || @message.is_a?(Proc))
+            raise Twilio::InvalidTreeError, "play must be a string or proc" if @play && !(@play.is_a?(String) || @play.is_a?(Proc))
+            raise Twilio::InvalidTreeError, "cannot have both play: and message:" if @message && @play
 
             raise Twilio::InvalidTreeError, "cannot have both prompt: and hangup:" if @prompt && @hangup
             raise Twilio::InvalidTreeError, "must have either prompt: or hangup:" unless @prompt || @hangup

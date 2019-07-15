@@ -13,13 +13,13 @@ module Twilio
           nil
         end
 
-        def greeting(message: nil, prompt:)
-          tree.greeting = Twilio::Phone::Tree::After.new(message: message, prompt: prompt)
+        def greeting(message: nil, play: nil, prompt:)
+          tree.greeting = Twilio::Phone::Tree::After.new(message: message, play: play, prompt: prompt)
           nil
         end
 
-        def prompt(prompt_name, message:, gather:, after:)
-          tree.prompts[prompt_name] = Twilio::Phone::Tree::Prompt.new(name: prompt_name, message: message, gather: gather, after: after)
+        def prompt(prompt_name, message: nil, play: nil, gather: nil, after:)
+          tree.prompts[prompt_name] = Twilio::Phone::Tree::Prompt.new(name: prompt_name, message: message, play: play, gather: gather, after: after)
           nil
         end
 

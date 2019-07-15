@@ -17,6 +17,10 @@ module Twilio
               message = after.message
               message = message.call(next_response) if message.is_a?(Proc)
               twiml.say(voice: tree.config[:voice], message: message)
+            elsif after.play.present?
+              play = after.play
+              play = play.call(next_response) if play.is_a?(Proc)
+              twiml.play(url: play)
             end
 
             if after.hangup?

@@ -2,10 +2,11 @@
 require 'rails_helper'
 
 RSpec.describe Twilio::Phone::Twiml::PromptResponseOperation, type: :operation do
+  let(:phone_call) { create(:phone_call, tree_name: tree.name) }
+  let(:response) { create(:response, phone_call: phone_call) }
+
   context "with FavouriteNumberTree" do
     let(:tree) { Twilio::Phone::Tree.for(:favourite_number) }
-    let(:response) { create(:response) }
-    let(:phone_call) { response.phone_call }
     let(:params) { { "Digits" => "3" } }
 
     it "outputs twiml" do

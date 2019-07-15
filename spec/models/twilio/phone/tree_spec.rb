@@ -29,7 +29,7 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
 
   describe Twilio::Phone::Tree::Prompt, type: :model do
     describe "#initialize" do
-      let(:valid_attributes) { { name: "asdf", message: "hello", gather: { type: :digits }, after: :hangup } }
+      let(:valid_attributes) { { name: "asdf", message: "hello", play: nil, gather: { type: :digits }, after: :hangup } }
 
       it "sets the gather" do
         expect(described_class.new(valid_attributes).gather).to be_a(Twilio::Phone::Tree::Gather)
@@ -43,6 +43,10 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
         expect(described_class.new(valid_attributes).message).to eq("hello")
       end
 
+      it "sets the play" do
+        expect(described_class.new(valid_attributes.merge(play: "file", message: nil)).play).to eq("file")
+      end
+
       it "raises if message is something weird" do
         expect { described_class.new(valid_attributes.merge(message: Object.new)) }.to raise_error(Twilio::InvalidTreeError)
       end
@@ -53,6 +57,14 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
 
       it "raises if prompt name is not set" do
         expect { described_class.new(valid_attributes.merge(name: nil)) }.to raise_error(Twilio::InvalidTreeError)
+      end
+
+      it "raises if both message: and play: are passed in" do
+        expect { described_class.new(valid_attributes.merge(play: "file")) }.to raise_error(Twilio::InvalidTreeError)
+      end
+
+      it "allows gather: to be nil" do
+        expect(described_class.new(valid_attributes.merge(gather: nil)).gather).to be_nil
       end
     end
   end
@@ -90,6 +102,14 @@ RSpec.describe Twilio::Phone::Tree, type: :model do
 
         it "sets the message" do
           expect(described_class.new(message: "hello", prompt: :asdf).message).to eq("hello")
+        end
+
+        it "sets the play" do
+          expect(described_class.new(play: "file", hangup: true).play).to eq("file")
+        end
+
+        it "raises if both message: and play: are passed in" do
+          expect { described_class.new(message: "hello", play: "file") }.to raise_error(Twilio::InvalidTreeError)
         end
       end
 

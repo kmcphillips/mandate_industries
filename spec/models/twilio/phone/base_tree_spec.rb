@@ -66,4 +66,25 @@ RSpec.describe Twilio::Phone::BaseTree, type: :model do
       expect(prompt.after.message).to start_with("Thank you for your input!")
     end
   end
+
+  context "with ToneRatingTree" do
+    let(:tree) { Twilio::Phone::Tree.for(:tone_rating) }
+
+    it "sets the name" do
+      expect(tree.name).to eq("tone_rating")
+    end
+
+    it "allows a prompt with play" do
+      prompt = tree.prompts[:play_first_tone]
+
+      expect(prompt.message).to be_nil
+      expect(prompt.play).to be_present
+    end
+
+    it "allows a prompt without a gather" do
+      prompt = tree.prompts[:play_first_tone]
+
+      expect(prompt.gather).to be_nil
+    end
+  end
 end

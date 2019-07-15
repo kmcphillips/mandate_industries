@@ -15,9 +15,13 @@ module Twilio
               message = prompt.message
               message = message.call(response) if message.is_a?(Proc)
               twiml.say(voice: tree.config[:voice], message: message)
+            elsif prompt.play.present?
+              play = prompt.play
+              play = play.call(response) if play.is_a?(Proc)
+              twiml.play(url: play)
             end
 
-            case prompt.gather.type
+            case prompt.gather&.type
             when :digits
               twiml.gather(
                 action: "/twilio/phone/#{tree.name}/prompt_response/#{response.id}.xml",
@@ -42,6 +46,8 @@ module Twilio
               end
 
               twiml.record(args)
+            when nil
+              twiml.redirect("/twilio/phone/#{tree.name}/prompt_response/#{response.id}.xml")
             else
               raise Twilio::InvalidTreeError, "unknown gather type #{prompt.gather.type.inspect}"
             end
