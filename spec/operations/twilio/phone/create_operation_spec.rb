@@ -55,7 +55,7 @@ RSpec.describe Twilio::Phone::CreateOperation, type: :operation do
       expect(phone_call.from_city).to eq("OTTAWA")
       expect(phone_call.from_province).to eq("ON")
       expect(phone_call.from_country).to eq("CA")
-      expect(phone_call.direction).to eq("received")
+      expect(phone_call.direction).to eq("inbound")
     end
 
     it "sends the SMS notifications" do

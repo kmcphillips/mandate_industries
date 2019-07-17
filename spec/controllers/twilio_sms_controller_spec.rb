@@ -5,7 +5,7 @@ RSpec.describe TwilioSMSController, type: :controller do
   include_examples "twilio SMS API call"
 
   let(:conversation) { message.sms_conversation }
-  let(:message) { create(:message, :received) }
+  let(:message) { create(:message, :inbound) }
   let(:twiml) { "<Response>expected</Response>" }
 
   describe "POST#message" do

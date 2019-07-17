@@ -6,18 +6,18 @@ module Twilio
         input :params, accepts: Hash, type: :keyword, required: true
 
         def execute
-          received_message = conversation.messages.build(
-            direction: "received",
+          inbound_message = conversation.messages.build(
+            direction: "inbound",
             body: params["Body"],
             sid: params["SmsSid"].presence || params["MessageSid"].presence
           )
 
-          received_message.save! && observer(received_message).notify
+          inbound_message.save! && observer(inbound_message).notify
 
-          body = Twilio::SMS::Responder.new(received_message).reply
+          body = Twilio::SMS::Responder.new(inbound_message).reply
 
           message = conversation.messages.build(
-            direction: "sent",
+            direction: "outbound",
             body: body,
           )
 

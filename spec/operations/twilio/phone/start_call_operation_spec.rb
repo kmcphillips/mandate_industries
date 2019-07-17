@@ -29,7 +29,7 @@ RSpec.describe Twilio::Phone::StartCallOperation, type: :operation do
       expect(phone_call.sid).to eq(call_sid)
       expect(phone_call.number).to eq(from_number)
       expect(phone_call.from_number).to eq(to_number)
-      expect(phone_call.direction).to eq("sent")
+      expect(phone_call.direction).to eq("outbound")
     end
 
     it "does not send SMS notifications" do

@@ -9,7 +9,7 @@ module Twilio
         sid = TwilioClient.start_call(tree: tree, to: to)
         params = {
           "CallSid" => sid,
-          "direction" => "sent",
+          "direction" => "outbound",
           "To" => Rails.application.credentials.twilio![:phone_number],
           "From" => to,
         }

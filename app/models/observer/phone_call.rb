@@ -2,7 +2,7 @@
 module Observer
   class PhoneCall < Base
     def created
-      if record.direction == "received"
+      if record.direction == "inbound"
         PhoneCallChannel.broadcast_recent
         TwilioClient.send_notification("A new call has come into Mandate Industries. https://mandate.kev.cool/")
       end

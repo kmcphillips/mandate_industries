@@ -5,7 +5,7 @@ RSpec.describe Twilio::SMS::Responder, type: :model do
   include_examples "twilio SMS API call"
 
   let(:conversation) { message.sms_conversation }
-  let(:message) { create(:message, :received) }
+  let(:message) { create(:message, :inbound) }
   subject(:responder) { described_class.new(message) }
 
   describe "#initialize" do
@@ -20,7 +20,7 @@ RSpec.describe Twilio::SMS::Responder, type: :model do
   end
 
   describe "#matches?" do
-    let(:message) { create(:message, :received, body: "oh, hello") }
+    let(:message) { create(:message, :inbound, body: "oh, hello") }
 
     context "String" do
       it "matches ignoring case" do
@@ -47,7 +47,7 @@ RSpec.describe Twilio::SMS::Responder, type: :model do
     end
 
     context "coersed type" do
-      let(:message) { create(:message, :received, body: "test_123")}
+      let(:message) { create(:message, :inbound, body: "test_123")}
 
       it "matches a symbol" do
         expect(responder.matches?(:test)).to be(true)

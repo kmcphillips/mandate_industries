@@ -42,7 +42,7 @@ RSpec.describe TwilioPhoneController, type: :controller do
   end
 
   describe "POST#outbound" do
-    let(:phone_call) { create(:phone_call, :sent, sid: call_sid) }
+    let(:phone_call) { create(:phone_call, :outbound, sid: call_sid) }
     let(:params) {
       {
         "AccountSid" => account_sid,
