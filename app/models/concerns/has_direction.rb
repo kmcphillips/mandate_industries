@@ -8,4 +8,12 @@ module HasDirection
     scope :outbound, -> { where(direction: "outbound") }
     scope :inbound, -> { where(direction: "inbound") }
   end
+
+  def inbound?
+    direction == "inbound"
+  end
+
+  def outbound?
+    direction == "outbound"
+  end
 end
